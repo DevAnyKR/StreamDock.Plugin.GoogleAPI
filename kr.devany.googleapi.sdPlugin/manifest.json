@@ -41,13 +41,30 @@
     {
       "Icon": "images/gmail.png",
       "Name": "Gmail",
-      "States": [
-        {
-          "FontSize": "10",
-          "TitleAlignment": "bottom",
-          "Image": "images/gmail.png"
-        }
+      "Controllers": [
+        "Keypad",
+        "Information"
       ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Gmail",
+      "UUID": "kr.devany.googleapi.gmail",
+      "PropertyInspectorPath": "propertyInspector/gmail/index.html"
+    },
+    {
+      "Icon": "images/youtube.png",
+      "Name": "YouTube Analytics",
+      "Controllers": [
+        "Keypad",
+        "Information"
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "YouTube 분석 데이터",
+      "UUID": "kr.devany.googleapi.youtubeanalytics",
+      "PropertyInspectorPath": "propertyInspector/youtubeanalytics/index.html"
+    },
+    {
+      "Icon": "images/analytics.png",
+      "Name": "Google Analytics",
       "Controllers": [
         "Keypad",
         "Information"
