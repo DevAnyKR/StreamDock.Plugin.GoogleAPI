@@ -11,7 +11,9 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
             switch (adSenseSettings.ViewType)
             {
                 case ViewType.Payments:
-                    return new AdSensePayment(connection, adSenseSettings.ViewType);
+                    return new Payment(connection, adSenseSettings.ViewType);
+                case ViewType.Today:
+                case ViewType.Monthly:
                 default:
                     throw new NotImplementedException();
             }

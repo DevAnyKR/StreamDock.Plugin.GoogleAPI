@@ -10,9 +10,9 @@ using Google.Apis.Services;
 
 namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
 {
-    internal class AdSensePayment : AdSense
+    internal class Payment : AdSense
     {
-        internal AdSensePayment(ISDConnection connection, ViewType viewType) : base(connection, viewType)
+        internal Payment(ISDConnection connection, ViewType viewType) : base(connection, viewType)
         {
         }
 
