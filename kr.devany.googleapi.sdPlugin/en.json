@@ -1,0 +1,15 @@
+{
+  "Description": "애드센스", 
+  "Name": "AdSense", 
+  "Category": "Google API", 
+  "kr.devany.AdSense.Management": {
+    "Name": "AdSense", 
+    "Tooltip": "구글 API를 사용하여 애드센스 정보를 가져옵니다."
+  },
+  "Localization": {
+    "Select Type": "형태 선택",
+    "Payments": "지급액",
+    "Today": "오늘",
+    "Monthly": "한 달"
+  }
+}

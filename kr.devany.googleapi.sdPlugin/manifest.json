@@ -1,0 +1,61 @@
+{
+  "SDKVersion": 2,
+  "Author": "DevAny",
+  "CodePath": "bin/StreamDock.Plugin.GoogleAPI",
+  "Description": "구글 애드센스 정보를 보여줍니다.",
+  "Name": "Google API",
+  "Icon": "images/google.png",
+  "URL": "https://www.devany.kr/",
+  "Version": "1.0",
+  "Software": {
+    "MinimumVersion": "2.9"
+  },
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Category": "Google API",
+  "CategoryIcon": "images/google.png",
+  "Actions": [
+    {
+      "Icon": "images/adsense.png",
+      "Name": "AdSense Management",
+      "States": [
+        {
+          "FontSize": "10",
+          "TitleAlignment": "bottom",
+          "Image": "images/adsense.png"
+        }
+      ],
+      "Controllers": [
+        "Keypad",
+        "Information"
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "구글 애드센스",
+      "UUID": "kr.devany.googleapi.adsensemanagement",
+      "PropertyInspectorPath": "propertyInspector/adsensemanagement/index.html"
+    },
+    {
+      "Icon": "images/gmail.png",
+      "Name": "Gmail",
+      "States": [
+        {
+          "FontSize": "10",
+          "TitleAlignment": "bottom",
+          "Image": "images/gmail.png"
+        }
+      ],
+      "Controllers": [
+        "Keypad",
+        "Information"
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "지메일",
+      "UUID": "kr.devany.googleapi.gmail",
+      "PropertyInspectorPath": "propertyInspector/gmail/index.html"
+    }
+  ]
+}
