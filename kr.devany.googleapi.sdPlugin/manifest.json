@@ -53,7 +53,7 @@
         "Information"
       ],
       "SupportedInMultiActions": false,
-      "Tooltip": "Gmail",
+      "Tooltip": "Gmail 편지함 데이터를 보고 관리합니다.",
       "UUID": "kr.devany.googleapi.gmail",
       "PropertyInspectorPath": "propertyInspector/gmail/index.html"
     },
