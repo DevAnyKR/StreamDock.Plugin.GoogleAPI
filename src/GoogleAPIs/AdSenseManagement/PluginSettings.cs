@@ -6,7 +6,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
     {
         [JsonProperty(PropertyName = "viewType")]
         public string SelectViewType { get; set; } = string.Empty;
-        public GoogleAPIs.AdSenseManagement.ViewType ViewType { get; set; }
+        public ViewTypes ViewType { get; set; }
 
         [JsonProperty(PropertyName = "frontColor")]
         public string SelectFrontColor { get; set; } = string.Empty;

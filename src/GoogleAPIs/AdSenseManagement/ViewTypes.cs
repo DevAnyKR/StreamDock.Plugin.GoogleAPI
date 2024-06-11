@@ -1,6 +1,6 @@
 ﻿namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
 {
-    internal enum ViewType
+    internal enum ViewTypes
     {
         Payments,
         Today,

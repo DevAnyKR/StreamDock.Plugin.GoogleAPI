@@ -81,13 +81,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GoogleAPIs\AdSenseManagement\AdSenseFactory.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\PluginAction.cs" />
-    <Compile Include="GoogleAPIs\AdSenseManagement\ViewType.cs" />
+    <Compile Include="GoogleAPIs\AdSenseManagement\ViewTypes.cs" />
+    <Compile Include="GoogleAPIs\GoogleAPIs.cs" />
     <Compile Include="helpers\ImageHelper.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\ManagementApiConsumer.cs" />
-    <Compile Include="GoogleAPIs\AdSenseManagement\AdSense.cs" />
-    <Compile Include="GoogleAPIs\AdSenseManagement\Payment.cs" />
+    <Compile Include="GoogleAPIs\AdSenseManagement\ActionProc.cs" />
     <Compile Include="models\Format.cs" />
     <Compile Include="models\ReportUtils.cs" />
     <Compile Include="Program.cs" />
@@ -100,7 +99,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GoogleAPIs\Gmail\" />
-    <Folder Include="interface\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -13,7 +13,6 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
     [PluginActionId("kr.devany.googleapi.adsensemanagement")]
     public class PluginAction : KeypadBase
     {
-        private AdSense adSense;
         private readonly PluginSettings settings;
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
@@ -83,7 +82,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         private void Connection_OnDeviceDidConnect(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.DeviceDidConnect> e)
         {
             UpdateSettingsEnum();
-            GetAdSenseInstance();
+            GetApiInstance();
         }
 
         /// <summary>
@@ -138,7 +137,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
             Tools.AutoPopulateSettings(settings, payload.Settings);
 
             UpdateSettingsEnum();
-            GetAdSenseInstance();
+            GetApiInstance();
 
             SaveSettings();
         }
@@ -159,7 +158,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         {
             try
             {
-                GetAdSenseInstance().OnPress();
+                GetApiInstance().OnPress();
             }
             catch (Exception ex)
             {
@@ -170,14 +169,13 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
 
         private void UpdateSettingsEnum()
         {
-            ViewType viewType;
-            Enum.TryParse<ViewType>(settings.SelectViewType, true, out viewType);
+            ViewTypes viewType;
+            Enum.TryParse<ViewTypes>(settings.SelectViewType, true, out viewType);
             settings.ViewType = viewType;
         }
-        private AdSense GetAdSenseInstance()
+        private ActionProc GetApiInstance()
         {
-            adSense = AdSenseFactory.GetAdSenseInstance(Connection, settings);
-            return adSense;
+            return new ActionProc(Connection, settings.ViewType);
         }
     }
 }

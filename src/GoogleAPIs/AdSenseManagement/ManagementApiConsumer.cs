@@ -30,7 +30,9 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         private int maxListPageSize;
         private Account adSenseAccount;
 
-        /// <summary><see cref="ManagementApiConsumer"/> 클래스의 새 인스턴스를 초기화합니다.</summary> 
+        /// <summary>
+        /// <see cref="ManagementApiConsumer"/> 클래스의 새 인스턴스를 초기화합니다.
+        /// </summary> 
         /// <param name="service">요청을 실행할 애드센스 서비스 개체입니다.</param>
         /// <param name="maxListPageSize">검색할 최대 페이지 크기입니다.</param>
         public ManagementApiConsumer(AdsenseService service, int maxListPageSize)
@@ -39,7 +41,10 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
             this.maxListPageSize = maxListPageSize;
         }
 
-        /// <summary>애드센스 관리 API에 대해 여러 게시자 요청을 실행합니다.</summary>
+        //TODO 계정 선택에 따라 쿼리할 것.
+        /// <summary>
+        /// 애드센스 관리 API에 대해 여러 게시자 요청을 실행합니다.
+        /// </summary>
         public string RunCallPayment()
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "전체 계정 쿼리 시작...");
@@ -73,7 +78,10 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
             return data;
         }
 
-        /// <summary>로그인한 사용자의 모든 계정을 가져오고 출력합니다.</summary>
+        //TODO StreamDock PI로 넘겨줄 것.
+        /// <summary>
+        /// 로그인한 사용자의 모든 계정을 가져오고 출력합니다.
+        /// </summary>
         /// <returns>검색된 계정의 마지막 페이지입니다.</returns>
         private IList<Account> GetAllAccounts()
         {
