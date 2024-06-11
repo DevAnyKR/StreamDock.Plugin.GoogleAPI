@@ -21,3 +21,11 @@
 ## 작업 예정 API
 
 - GMail 조회
+
+## 사용된 NuGet
+
+- Google.Apis
+- Google.Apis.Adsense.v2
+- Google.Apis.Auth
+- Newtonsoft.Json
+- StreamDeck-Tools
