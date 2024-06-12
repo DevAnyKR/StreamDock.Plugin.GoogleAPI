@@ -2,12 +2,11 @@
 
 스트림독에서 구글 API 기능을 사용할 수 있습니다. 보안이 우수한 OAuth 2.0으로 구글 계정을 인증합니다.
 
-## Sample
+## Preview
 
-![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/e4952131-0713-429c-8385-70e0d2d2fac4)
+![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/e156bae5-c4bd-4de1-830a-45f8ee3842ee)
 
-![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/012867af-0371-4beb-9158-0c12673701d9)
-
+![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/8f39a896-f4bf-43f8-8ed7-66ad8a25250e)
 
 ## How to Install...
 
