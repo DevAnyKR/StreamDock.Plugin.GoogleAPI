@@ -24,7 +24,7 @@ using Google.Apis.Adsense.v2.Data;
 
 namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
 {
-    public class ManagementApiConsumer
+    internal class ManagementApiConsumer
     {
         private AdsenseService service;
         private int maxListPageSize;
@@ -35,56 +35,79 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary> 
         /// <param name="service">요청을 실행할 애드센스 서비스 개체입니다.</param>
         /// <param name="maxListPageSize">검색할 최대 페이지 크기입니다.</param>
-        public ManagementApiConsumer(AdsenseService service, int maxListPageSize)
+        internal ManagementApiConsumer(AdsenseService service, int maxListPageSize)
         {
             this.service = service;
             this.maxListPageSize = maxListPageSize;
         }
 
-        //TODO 계정 선택에 따라 쿼리할 것.
+        //TODO 계정이 여러개일 경우 PI로 전달 후 설정에 따라 쿼리할 것.
         /// <summary>
         /// 애드센스 관리 API에 대해 여러 게시자 요청을 실행합니다.
         /// </summary>
-        public string RunCallPayment()
+        internal Item RunCallPayment()
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "전체 계정 쿼리 시작...");
             IList<Account> accounts = GetAllAccounts();
-            Logger.Instance.LogMessage(TracingLevel.INFO, "전체 계정 쿼리 완료...");
 
-            string data = string.Empty;
+            Item.Instance.Init();
 
             adSenseAccount = accounts.NullToEmpty().FirstOrDefault();
             if (adSenseAccount != null)
             {
+                //Item.Instance.Value2 = adSenseAccount.Name;
                 var payments = service.Accounts.Payments.List(adSenseAccount.Name).Execute();
 
-                //Todo 코드 검증 필요.
                 if (payments.Payments.Any())
                 {
-                    data = payments.Payments.First().Amount;
+                    Item.Instance.Value1 = payments.Payments.First().Amount;
+                    Item.Instance.DataValid = true;
                 }
                 else
                 {
-                    data = "정보 없음";
+                    Item.Instance.Value1 = "정보 없음";
                     Logger.Instance.LogMessage(TracingLevel.WARN, "정보 없음");
                 }
             }
             else
             {
-                data = "계정 없음";
+                Item.Instance.Value1 = "계정 없음";
                 Logger.Instance.LogMessage(TracingLevel.WARN, "계정 없음");
             }
+            Item.Instance.DataReceived = true;
 
-            return data;
+            return Item.Instance;
         }
 
-        //TODO StreamDock PI로 넘겨줄 것.
+        internal Item RunCallIncomeToday()
+        {
+            Item.Instance.Init();
+            return Item.Instance;
+        }
+        internal Item RunCallIncomeWeekly()
+        {
+            Item.Instance.Init();
+            return Item.Instance;
+        }
+
+        internal Item RunCallIncomeMonthly()
+        {
+            Item.Instance.Init();
+            return Item.Instance;
+        }
+        internal Item RunCallIncomeLast30Days()
+        {
+            Item.Instance.Init();
+            return Item.Instance;
+        }
+
         /// <summary>
         /// 로그인한 사용자의 모든 계정을 가져오고 출력합니다.
         /// </summary>
         /// <returns>검색된 계정의 마지막 페이지입니다.</returns>
         private IList<Account> GetAllAccounts()
         {
+            Logger.Instance.LogMessage(TracingLevel.INFO, "전체 계정 쿼리 시작...");
+
             // 페이지에서 계정 목록을 검색하고 수신된 데이터를 표시합니다.
             string pageToken = null;
             ListAccountsResponse accountResponse = null;
@@ -97,6 +120,8 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
                 accountResponse = accountRequest.Execute();
                 pageToken = accountResponse.NextPageToken;
             } while (pageToken != null);
+
+            Logger.Instance.LogMessage(TracingLevel.INFO, "전체 계정 쿼리 완료...");
 
             // 기본 샘플에서 실행할 항목이 있도록 계정의 마지막 페이지를 반환합니다.
             return accountResponse.Accounts;

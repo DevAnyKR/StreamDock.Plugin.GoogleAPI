@@ -2,10 +2,13 @@
 
 using System.Drawing;
 
-namespace StreamDock.Plugin.GoogleAPIs
+namespace StreamDock.Plugin
 {
-    public static class ImageHelper
+    public class ImageHelper
     {
+        private static int maxWidth = 142;
+        private static int maxHeight = 142;
+
         internal static Image GetImage(Color color)
         {
             var bmp = Tools.GenerateGenericKeyImage(out Graphics graphics);
@@ -17,7 +20,7 @@ namespace StreamDock.Plugin.GoogleAPIs
         internal static Font ResizeFont(Graphics graphics, string text, Font font)
         {
             var newSize = graphics.MeasureString(text, font);
-            if (newSize.Width > 142 || newSize.Height > 142)
+            if (newSize.Width > maxWidth || newSize.Height > maxHeight)
             {
                 return ResizeFont(graphics, text, new Font("Arial", font.Size - 2, FontStyle.Bold, GraphicsUnit.Pixel));
             }
@@ -25,7 +28,12 @@ namespace StreamDock.Plugin.GoogleAPIs
             return font;
         }
 
-        internal static Image SetImageText(Image image, string text)
+        internal static Image SetImageText(Image image, string text, Brush brush)
+        {
+            return SetImageText(image, text, brush, 72, 72);
+        }
+
+        internal static Image SetImageText(Image image, string text, Brush brush, int fontX, int fontY)
         {
             var font = new Font("Arial", 70, FontStyle.Bold, GraphicsUnit.Pixel);
             var stringFormat = new StringFormat
@@ -38,7 +46,7 @@ namespace StreamDock.Plugin.GoogleAPIs
             using (var graphics = Graphics.FromImage(image))
             {
                 font = ResizeFont(graphics, text, font);
-                graphics.DrawString(text, font, Brushes.White, !isRGB ? 72 : 5, 72, stringFormat);
+                graphics.DrawString(text, font, brush, !isRGB ? fontX : 5, fontY, stringFormat);
             }
 
             return image;

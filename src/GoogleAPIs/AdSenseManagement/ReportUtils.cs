@@ -17,15 +17,13 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-using Google.Apis.Adsense.v2;
 using Google.Apis.Adsense.v2.Data;
 using Google.Apis.Util;
 
 using GenerateRequest = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest;
 
-namespace StreamDock.Plugin.GoogleAPIs
+namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
 {
     /// <summary>
     /// Collection of utilities to display and modify reports

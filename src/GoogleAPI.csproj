@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6C1C9C32-D82A-4897-8132-1B7A9716928C}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>StreamDock.Plugin.GoogleAPI</RootNamespace>
-    <AssemblyName>StreamDock.Plugin.GoogleAPI</AssemblyName>
+    <RootNamespace>StreamDock.Plugin.GoogleAPIs</RootNamespace>
+    <AssemblyName>StreamDock.Plugin.GoogleAPIs</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -40,6 +40,7 @@
   <PropertyGroup>
     <ApplicationIcon>DevAny.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="CommandLine, Version=2.9.1.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.9.1\lib\net461\CommandLine.dll</HintPath>
@@ -85,15 +86,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="models\KeyImage.cs" />
+    <Compile Include="GoogleAPIs\AdSenseManagement\Model\Item.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\PluginAction.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\ViewTypes.cs" />
     <Compile Include="GoogleAPIs\GoogleAPIs.cs" />
     <Compile Include="helpers\ImageHelper.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\ManagementApiConsumer.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\ActionProc.cs" />
-    <Compile Include="models\Format.cs" />
     <Compile Include="models\IPluginSettings.cs" />
-    <Compile Include="models\ReportUtils.cs" />
+    <Compile Include="GoogleAPIs\AdSenseManagement\ReportUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\PluginSettings.cs" />
@@ -114,11 +116,13 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DevAny.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DevAny.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

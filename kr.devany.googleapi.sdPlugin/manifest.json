@@ -1,7 +1,7 @@
 {
   "SDKVersion": 2,
   "Author": "DevAny",
-  "CodePath": "bin/StreamDock.Plugin.GoogleAPI",
+  "CodePath": "bin/StreamDock.Plugin.GoogleAPIs",
   "Description": "구글 애드센스 정보를 보여줍니다.",
   "Name": "Google API",
   "Icon": "images/google.png",
