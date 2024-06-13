@@ -19,7 +19,7 @@ using System.Linq;
 
 using BarRaider.SdTools;
 
-using Google.Apis.Adsense.v2;
+using Google.Apis.Adsense.v2; // https://googleapis.dev/dotnet/Google.Apis.Adsense.v2/latest/api/Google.Apis.Adsense.v2.html
 using Google.Apis.Adsense.v2.Data;
 
 namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
@@ -47,33 +47,33 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         internal Item RunCallPayment()
         {
-            IList<Account> accounts = GetAllAccounts();
-
             Item.Instance.Init();
 
-            adSenseAccount = accounts.NullToEmpty().FirstOrDefault();
-            if (adSenseAccount != null)
+            // 계정 목록이 없으면 새로 가져옵니다.
+            if (!Item.Instance.Accounts.Any())
             {
-                //Item.Instance.Value2 = adSenseAccount.Name;
+                Item.Instance.Accounts = GetAllAccounts();
+            }
+            Item.Instance.ResultAccounts = true;
+
+            adSenseAccount = Item.Instance.Accounts.NullToEmpty().FirstOrDefault();
+
+            if (adSenseAccount.Name != null)
+            {
                 var payments = service.Accounts.Payments.List(adSenseAccount.Name).Execute();
+
+                Item.Instance.Payments.Clear();
 
                 if (payments.Payments.Any())
                 {
-                    Item.Instance.Value1 = payments.Payments.First().Amount;
-                    Item.Instance.DataValid = true;
+                    Item.Instance.Payments = payments.Payments;
+                    Item.Instance.ResultPayments = true;
                 }
                 else
                 {
-                    Item.Instance.Value1 = "정보 없음";
                     Logger.Instance.LogMessage(TracingLevel.WARN, "정보 없음");
                 }
             }
-            else
-            {
-                Item.Instance.Value1 = "계정 없음";
-                Logger.Instance.LogMessage(TracingLevel.WARN, "계정 없음");
-            }
-            Item.Instance.DataReceived = true;
 
             return Item.Instance;
         }

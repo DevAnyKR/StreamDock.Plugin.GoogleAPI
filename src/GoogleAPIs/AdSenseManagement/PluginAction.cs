@@ -15,6 +15,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
     [PluginActionId("kr.devany.googleapi.adsensemanagement")]
     public class PluginAction : KeypadBase
     {
+        internal Item item;
         internal KeyImage keyImage;
         internal PluginSettings pluginSettings { get; set; }
 
@@ -22,6 +23,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         {
             pluginSettings = ((payload.Settings == null || payload.Settings.Count == 0) ? PluginSettings.CreateDefaultSettings() : payload.Settings.ToObject<PluginSettings>());
             keyImage = new();
+            item = new();
 
             Connection.OnApplicationDidLaunch += Connection_OnApplicationDidLaunch;
             Connection.OnApplicationDidTerminate += Connection_OnApplicationDidTerminate;
@@ -38,7 +40,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Connection_OnTitleParametersDidChange(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
+        private void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
 
@@ -50,9 +52,11 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Connection_OnSendToPlugin(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.SendToPlugin> e)
+        private void Connection_OnSendToPlugin(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.SendToPlugin> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnSendToPlugin Event Handled");
+
+            DisplayInitial();
         }
 
         /// <summary>
@@ -60,7 +64,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Connection_OnPropertyInspectorDidDisappear(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidDisappear> e)
+        private void Connection_OnPropertyInspectorDidDisappear(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidDisappear> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnPropertyInspectorDidDisappear Event Handled");
         }
@@ -70,7 +74,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Connection_OnPropertyInspectorDidAppear(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidAppear> e)
+        private void Connection_OnPropertyInspectorDidAppear(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidAppear> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnPropertyInspectorDidAppear Event Handled");
         }
@@ -80,7 +84,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Connection_OnDeviceDidDisconnect(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.DeviceDidDisconnect> e)
+        private void Connection_OnDeviceDidDisconnect(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.DeviceDidDisconnect> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnDeviceDidDisconnect Event Handled");
         }
@@ -90,7 +94,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Connection_OnDeviceDidConnect(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.DeviceDidConnect> e)
+        private void Connection_OnDeviceDidConnect(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.DeviceDidConnect> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnDeviceDidConnect Event Handled");
         }
@@ -100,7 +104,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Connection_OnApplicationDidTerminate(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.ApplicationDidTerminate> e)
+        private void Connection_OnApplicationDidTerminate(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.ApplicationDidTerminate> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnApplicationDidTerminate Event Handled");
         }
@@ -110,7 +114,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Connection_OnApplicationDidLaunch(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Events.ApplicationDidLaunch> e)
+        private void Connection_OnApplicationDidLaunch(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.ApplicationDidLaunch> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnApplicationDidLaunch Event Handled");
         }
@@ -188,10 +192,13 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         public void DisplayInitial()
         {
-            if (Item.Instance.DataReceived)
+            if (Item.Instance.DisplayValue1 == null)
             {
-                UpdateKeyImage();
+                Item.Instance.Init();
+                Item.Instance.DisplayValue1 = "Press Key...";
             }
+            UpdateSettingsEnum();
+            UpdateKeyImage();
         }
 
         /// <summary>
@@ -218,6 +225,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
             try
             {
                 Item.Instance = await GetApiInstance().Execute();
+                UpdateSettingsEnum();
                 UpdateKeyImage();
             }
             catch (Exception ex)
@@ -232,17 +240,12 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         public void UpdateKeyImage()
         {
-            if (!Item.Instance.DataReceived)
-            {
-                UpdateSettingsEnum();
-            }
-
             var image = ImageHelper.GetImage(pluginSettings.BackColor);
 
-            image = ImageHelper.SetImageText(image, Item.Instance.Value1, new SolidBrush(pluginSettings.FrontColor), 72, Item.Instance.Value2 == null ? 72 : 96);
-            if (Item.Instance.Value2 != null)
+            image = ImageHelper.SetImageText(image, Item.Instance.DisplayValue1, new SolidBrush(pluginSettings.FrontColor), 72, Item.Instance.DisplayValue2 == null ? 72 : 96);
+            if (Item.Instance.DisplayValue2 != null)
             {
-                image = ImageHelper.SetImageText(image, Item.Instance.Value2, new SolidBrush(pluginSettings.FrontColor), 72, 48);
+                image = ImageHelper.SetImageText(image, Item.Instance.DisplayValue2, new SolidBrush(pluginSettings.FrontColor), 72, 48);
             }
             keyImage.Final = image;
             Connection.SetImageAsync(keyImage.Final);
@@ -257,13 +260,16 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
             {
                 ViewTypes viewType;
                 Enum.TryParse<ViewTypes>(pluginSettings.PiViewType, true, out viewType);
-                pluginSettings.ViewType = viewType;
 
+                // 쿼리 옵션이 바뀌면 수신 데이터 초기화
+                if (pluginSettings.ViewType != viewType)
+                {
+                    Item.Instance.Init();
+                }
+
+                pluginSettings.ViewType = viewType;
                 pluginSettings.FrontColor = ColorTranslator.FromHtml(pluginSettings.PiFrontColor);
                 pluginSettings.BackColor = ColorTranslator.FromHtml(pluginSettings.PiBackColor);
-
-                Item.Instance.Init();
-                Item.Instance.Value1 = "Press Key...";
             }
             catch (Exception ex)
             {
@@ -278,7 +284,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// <returns></returns>
         private ActionProc GetApiInstance()
         {
-            return new ActionProc(Connection, pluginSettings.ViewType);
+            return new ActionProc(pluginSettings.ViewType);
         }
     }
 }

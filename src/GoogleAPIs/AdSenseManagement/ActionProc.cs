@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using BarRaider.SdTools;
@@ -16,7 +17,7 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
     {
         ViewTypes ViewType { get; set; }
 
-        internal ActionProc(ISDConnection connection, ViewTypes viewType)
+        internal ActionProc(ViewTypes viewType)
         {
             ViewType = viewType;
         }
@@ -26,8 +27,6 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         /// </summary>
         internal async Task<Item> Execute()
         {
-            var item = Item.Instance;
-
             try
             {
                 // Create the service.
@@ -44,20 +43,21 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
                 switch (this.ViewType)
                 {
                     case ViewTypes.Payments:
-                        item = managementApiConsumer.RunCallPayment();
+                        Item.Instance = managementApiConsumer.RunCallPayment();
+                        Item.Instance.DisplayValue1 = Item.Instance.Payments.First().Amount;
                         break;
                     default:
-                        item.Value1 = "옵션 없음";
+                        Item.Instance.DisplayValue1 = "옵션 없음";
                         break;
                 }
             }
             catch (Exception ex)
             {
-                item = null;
+                Item.Instance = null;
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
-            return item;
+            return Item.Instance;
         }
     }
 }

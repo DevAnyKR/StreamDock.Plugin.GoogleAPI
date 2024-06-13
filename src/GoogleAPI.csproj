@@ -86,6 +86,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GoogleAPIs\Extensions\Google.Apis.Adsense.v2.Extensions.cs" />
     <Compile Include="models\KeyImage.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\Model\Item.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\PluginAction.cs" />
@@ -107,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="helpers\System.Collection.Generic.Extensions.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

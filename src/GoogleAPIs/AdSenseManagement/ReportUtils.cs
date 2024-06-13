@@ -19,9 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Google.Apis.Adsense.v2.Data;
-using Google.Apis.Util;
-
-using GenerateRequest = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest;
 
 namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
 {
@@ -72,41 +69,6 @@ namespace StreamDock.Plugin.GoogleAPIs.AdSenseManagement
         public static string EscapeFilterParameter(string parameter)
         {
             return parameter.Split('/').Last().Replace("\\", "\\\\").Replace(",", "\\,");
-        }
-
-        public static IList<T> NullToEmpty<T>(this IList<T> list)
-        {
-            return list ?? new List<T>();
-        }
-
-        public static bool IsNullOrEmpty<T>(this IList<T> list)
-        {
-            return list == null || list.Count == 0;
-        }
-
-        public static void AddDimension(this GenerateRequest request,
-                                        GenerateRequest.DimensionsEnum dimension)
-        {
-            string dimensionText = Utilities.ConvertToString(dimension);
-
-            request.ModifyRequest += message => {
-                var uriBuilder = new UriBuilder(message.RequestUri);
-                string separator = uriBuilder.Query == "" ? "" : "&";
-                uriBuilder.Query += $"{separator}dimensions={dimensionText}";
-                message.RequestUri = uriBuilder.Uri;
-            };
-        }
-
-        public static void AddMetric(this GenerateRequest request, GenerateRequest.MetricsEnum metric)
-        {
-            string metricText = Utilities.ConvertToString(metric);
-
-            request.ModifyRequest += message => {
-                var uriBuilder = new UriBuilder(message.RequestUri);
-                string separator = uriBuilder.Query == "" ? "" : "&";
-                uriBuilder.Query += $"{separator}metrics={metricText}";
-                message.RequestUri = uriBuilder.Uri;
-            };
         }
     }
 }
