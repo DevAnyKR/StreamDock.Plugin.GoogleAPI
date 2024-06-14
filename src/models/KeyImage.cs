@@ -1,11 +1,6 @@
-﻿using System;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
-namespace StreamDock.Plugin
+namespace StreamDock.Plugins
 {
     internal class KeyImage
     {
@@ -14,6 +9,5 @@ namespace StreamDock.Plugin
         internal Image KeyReleased { get; set; } = null;
         internal Image ActionProcessing { get; set;}
         internal Image Final { get; set;}
-
     }
 }

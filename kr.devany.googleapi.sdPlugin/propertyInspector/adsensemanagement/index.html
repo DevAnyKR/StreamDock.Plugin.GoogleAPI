@@ -5,17 +5,37 @@
 	<title>Google AdSense</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
 	<script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
+
 	<script src="PluginActionPI.js"></script>
 </head>
 
 <body>
 	<div class="sdpi-wrapper">
-		<div class="sdpi-item" id="dvViewType">
-			<div class="sdpi-item-label">Select Type</div>
-			<select class="sdpi-item-value select sdProperty" id="viewType" oninput="setSettings()">
-			   <option value="payments">Payments</option>
-			   <option value="last7days">Last 7 Days</option>
-			   <option value="last30days">Last 30 Days</option>
+		<div class="sdpi-item" id="dvResource">
+			<div class="sdpi-item-label">Resource Type</div>
+			<select class="sdpi-item-value select sdProperty" id="resource" oninput="setSettings()">
+				<option value="Payments" selected>Payments</option>
+				<option value="Reports">Reports</option>
+			</select>
+		</div>
+		<div class="sdpi-item" id="dvDateRange">
+			<div class="sdpi-item-label">Date Range</div>
+			<select class="sdpi-item-value select sdProperty" id="dateRange" oninput="setSettings()">
+				<option value="TODAY">Today</option>
+				<option value="YESTERDAY">Yesterday</option>
+				<option value="MONTHTODATE">Month to Date</option>
+				<option value="YEARTODATE">Year to Date</option>
+				<option value="LAST7DAYS">Last 7 Days</option>
+				<option value="LAST30DAYS">Last 30 Days</option>
+			</select>
+		</div>
+		<div class="sdpi-item" id="dvMetrics">
+			<div class="sdpi-item-label">Metrics</div>
+			<select class="sdpi-item-value select sdProperty" id="metric" oninput="setSettings()">
+				<option value="PAGEVIEWS">Page Views</option>
+				<option value="CLICKS">Clicks</option>
+				<option value="IMPRESSIONS">Impressions</option>
+				<option value="ESTIMATEDEARNINGS">Estimated Earnings</option>
 			</select>
 		</div>
 		<div type="color" class="sdpi-item" id="dvFrontolor">

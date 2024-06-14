@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace StreamDock.Plugin
+namespace StreamDock.Plugins
 {
     internal interface IPluginSettings
     {
