@@ -39,7 +39,6 @@
 ## Todo APIs
 
 - GMail
-- .NET 8
 
 ## Language
 - C#.Net Framework 4.8.x
