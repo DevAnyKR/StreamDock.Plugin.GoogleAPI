@@ -6,7 +6,7 @@
 
 ![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/e156bae5-c4bd-4de1-830a-45f8ee3842ee)
 
-![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/8f39a896-f4bf-43f8-8ed7-66ad8a25250e)
+![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/4ce2d45f-a60a-47ee-b79b-bce1fbf74de0)
 
 ## How to Install...
 
