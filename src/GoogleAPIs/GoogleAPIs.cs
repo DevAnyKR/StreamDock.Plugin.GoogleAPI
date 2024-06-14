@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +7,7 @@ using BarRaider.SdTools;
 using Google.Apis.Adsense.v2;
 using Google.Apis.Auth.OAuth2;
 
-namespace StreamDock.Plugin.GoogleAPIs
+namespace StreamDock.Plugins.GoogleAPIs
 {
     /// <summary>
     /// API 최상위 클래스
