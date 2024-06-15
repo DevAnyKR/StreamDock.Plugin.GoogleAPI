@@ -9,6 +9,7 @@ using Google.Apis.Adsense.v2.Data;
 using DateRangeEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.DateRangeEnum;
 using MetricsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.MetricsEnum;
 using DimensionsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.DimensionsEnum;
+using System.Threading.Tasks;
 
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
@@ -87,7 +88,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <param name="dateRangeEnum"></param>
         /// <param name="metricsEnum"></param>
         /// <returns></returns>
-        internal ReportResult RunCallReport(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum)
+        internal async Task<ReportResult> RunCallReportAsync(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum)
         {
             ReportResult reportResult = null;
 
@@ -98,7 +99,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 report.DateRange = dateRangeEnum;
                 report.Metrics = metricsEnum;
 
-                var result = report.Execute();
+                var result = await report.ExecuteAsync();
 
                 if (result.TotalMatchedRows > 0)
                 {
@@ -115,7 +116,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <param name="dateRangeEnum"></param>
         /// <param name="metricsEnum"></param>
         /// <returns></returns>
-        internal ReportResult RunCallReport(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum, DimensionsEnum dimensionsEnum)
+        internal async Task<ReportResult> RunCallReportAsync(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum, DimensionsEnum dimensionsEnum)
         {
             ReportResult reportResult = null;
 
@@ -127,7 +128,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 report.Metrics = metricsEnum;
                 report.Dimensions = dimensionsEnum;
 
-                var result = report.Execute();
+                var result = await report.ExecuteAsync();
 
                 if (result.TotalMatchedRows > 0)
                 {

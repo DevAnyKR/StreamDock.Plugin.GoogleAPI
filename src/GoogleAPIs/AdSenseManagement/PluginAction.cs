@@ -250,7 +250,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             try
             {
-                item = await GetApiInstance().Execute();
+                item = await GetApiInstance().ExecuteAsync();
                 await Connection.SetImageAsync(UpdateKeyImage(item));
             }
             catch (Exception ex)

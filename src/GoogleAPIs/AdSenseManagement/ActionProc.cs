@@ -29,7 +29,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <summary>
         /// 키가 눌렸을 때 동작 정의. Google API 통신.
         /// </summary>
-        internal async Task<Item> Execute()
+        internal async Task<Item> ExecuteAsync()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                     case Resources.Reports:
                         var key = ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metric);
 
-                        Item.ReportResults[key] = managementApiConsumer.RunCallReport(pluginSettings.DateRange, pluginSettings.Metric);
+                        Item.ReportResults[key] = await managementApiConsumer.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metric);
                         break;
                     case Resources.Dimensions:
 

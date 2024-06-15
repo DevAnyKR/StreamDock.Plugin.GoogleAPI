@@ -16,7 +16,7 @@ namespace StreamDock.Plugins.GoogleAPIs
     {
         internal GoogleAPI()
         {
-            GoogleWebAuthorizationBroker.Folder = "StreamDock Plugin";
+            GoogleWebAuthorizationBroker.Folder = @"DevAny\StreamDock.Plugins\GoogleAPI";
         }
 
         /// <summary>

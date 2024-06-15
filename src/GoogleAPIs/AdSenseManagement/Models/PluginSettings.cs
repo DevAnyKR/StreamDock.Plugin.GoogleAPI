@@ -33,18 +33,18 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 
         [JsonProperty(PropertyName = "dateRange")]
         public string PiDateRange { get; set; }
-        private DateRangeEnum dateRangeEnum;
+        private DateRangeEnum dateRange;
         public DateRangeEnum DateRange
         {
             get
             {
                 var _ = PiDateRange.TryParse<DateRangeEnum>();
-                if (dateRangeEnum != _)
+                if (dateRange != _)
                 {
-                    dateRangeEnum = _;
-                    OnPropertyChanged("DateRangeEnum");
+                    dateRange = _;
+                    OnPropertyChanged("DateRange");
                 }
-                return dateRangeEnum;
+                return dateRange;
             }
         }
 
