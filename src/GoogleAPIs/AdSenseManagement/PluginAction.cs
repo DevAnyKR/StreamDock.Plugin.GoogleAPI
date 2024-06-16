@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms.DataVisualization.Charting;
 
 using BarRaider.SdTools;
 using BarRaider.SdTools.Wrappers;
 
 using Newtonsoft.Json.Linq;
-
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
     /// <summary>
@@ -17,14 +18,11 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
     public class PluginAction : KeypadBase
     {
         Item item { get; set; }
-        KeyImage keyImage { get; set; }
         PluginSettings pluginSettings { get; set; }
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
             pluginSettings = (payload.Settings == null || payload.Settings.Count == 0) ? PluginSettings.CreateDefaultSettings() : payload.Settings.ToObject<PluginSettings>();
-
-            keyImage = new();
             item = new();
 
             Connection.OnApplicationDidLaunch += Connection_OnApplicationDidLaunch;
@@ -196,8 +194,8 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             return pluginSettings.Resource switch
             {
                 Resources.Payments => item.PaymentExists,
-                Resources.Reports => item.ReportExists && Item.ReportResults.ContainsKey(ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metric)),
-                Resources.Dimensions => item.ReportExists && Item.ReportResults.ContainsKey(ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metric, pluginSettings.Dimensions)),
+                Resources.Reports => item.ReportExists && Item.ReportResults.ContainsKey(ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics)),
+                Resources.Dimensions => item.ReportExists && Item.ReportResults.ContainsKey(ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions)),
                 _ => false
             };
         }
@@ -207,15 +205,27 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// </summary>
         private async Task DisplayInitialAsync()
         {
-            if (!CheckExistData())
+            try
             {
-                item.DisplayValues.OnlyOne("Press Key...");
+
+                if (!CheckExistData())
+                {
+                    Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 없음.");
+                    item.DisplayValues.OnlyOne("Press Key...");
+                }
+                else
+                {
+                    Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 발견.");
+                    UpdateValues();
+                }
+                Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
+                await Connection.SetImageAsync(UpdateKeyImage(item, true), null, true); // 초기 이미지 출력
             }
-            else
+            catch (Exception ex)
             {
-                UpdateValues();
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
-            await Connection.SetImageAsync(UpdateKeyImage(item));
         }
         /// <summary>
         /// 작업 중임을 알리는 이미지를 표시합니다.
@@ -231,7 +241,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                     graphics.AddTextPath(tp, image.Height, image.Width, "처리 중...", Color.Black, 7);
                     graphics.Dispose();
 
-                    keyImage.ActionProcessing = image;
+                    Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayBusyAsync: 스트림독으로 이미지 전송 중...");
                     await Connection.SetImageAsync(image);
                 }
             }
@@ -249,7 +259,8 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             try
             {
                 item = await GetApiInstance().ExecuteAsync();
-                await Connection.SetImageAsync(UpdateKeyImage(item));
+                Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: 스트림독으로 이미지 전송 중...");
+                await Connection.SetImageAsync(UpdateKeyImage(item), null, true);
             }
             catch (Exception ex)
             {
@@ -267,33 +278,49 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <summary>
         /// 키 이미지를 변경합니다. 출력할 정보를 이미지로 변환합니다.
         /// </summary>
-        private Image UpdateKeyImage(Item item)
+        private Bitmap UpdateKeyImage(Item item, bool initial = false)
         {
-            Image image = null;
+            Bitmap bmp = null;
             try
             {
-                image = ImageHelper.GetImage(pluginSettings.BackColor);
+                bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
 
-                switch (pluginSettings.ValueType)
+                switch (pluginSettings.Resource)
                 {
-                    case ValueTypes.String:
+                    case Resources.Payments:
+                    case Resources.Reports:
                         for (int i = 0; i < item.DisplayValues.Count; i++)
                         {
-                            image = ImageHelper.SetImageText(image, item.DisplayValues[i], new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1));
+                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i], new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
                         }
                         break;
-                    case ValueTypes.Chart:
+                    case Resources.Dimensions:
+                        if (initial)
+                        {
+                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[0], new SolidBrush(pluginSettings.FrontColor), 72, 72));
+                        }
+                        else
+                        {
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                new ChartReport(pluginSettings).CreateChart().SaveImage(ms, ChartImageFormat.Bmp);
+
+                                ms.Position = 0;
+                                using (var bitmap = new Bitmap(ms))
+                                {
+                                    bmp = new Bitmap(bitmap);
+                                }
+                            }
+                        }
                         break;
                 }
-
-                keyImage.Final = image;
             }
             catch (Exception ex)
             {
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
-            return image;
+            return bmp;
         }
         /// <summary>
         /// Google API 쿼리 클래스의 인스턴스를 가져옵니다.

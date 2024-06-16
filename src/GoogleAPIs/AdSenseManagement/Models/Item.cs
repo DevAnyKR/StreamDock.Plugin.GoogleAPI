@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 using Google.Apis.Adsense.v2.Data;
-
-using StreamDock.Plugins.GoogleAPIs.GoogleAPIs.AdSenseManagement;
 
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
@@ -18,10 +17,11 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         internal static IList<Payment> Payments { get; set; } = new List<Payment>();
         internal static IList<Site> Sites { get; set; } = new List<Site>();
         internal static IDictionary<IReportKey, ReportResult> ReportResults { get; set; } = new Dictionary<IReportKey, ReportResult> { };
+        internal static IDictionary<IReportKey, Image> ReportCharts { get; set; } = new Dictionary<IReportKey, Image> { };
         internal static string AccountName { get; set; }
         internal bool AccountExists => !AccountName.IsNullOrEmpty() && !Accounts.IsNullOrEmpty() && Accounts.Any();
-        internal bool PaymentExists => !AccountName.IsNullOrEmpty() && !Payments.IsNullOrEmpty() && Payments.Any();
-        internal bool ReportExists => !ReportResults.IsNullOrEmpty() && ReportResults.Any();
+        internal bool PaymentExists => !Payments.IsNullOrEmpty() && !Payments.IsNullOrEmpty() && Payments.Any();
+        internal bool ReportExists => !ReportResults.IsNullOrEmpty() && !ReportResults.IsNullOrEmpty() && ReportResults.Any();
 
         internal IList<string> DisplayValues { get; set; } = new List<string>();
 
@@ -31,6 +31,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             Payments = new List<Payment>();
             Sites = new List<Site>();
             ReportResults = new Dictionary<IReportKey, ReportResult> { };
+            ReportCharts = new Dictionary<IReportKey, Image> { };
         }
     }
 }
