@@ -1,4 +1,4 @@
-﻿namespace StreamDock.Plugins.GoogleAPIs.GoogleAPIs.AdSenseManagement
+﻿namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
     interface IReportKey
     {

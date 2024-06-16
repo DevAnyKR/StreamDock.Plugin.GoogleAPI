@@ -8,8 +8,6 @@ using BarRaider.SdTools.Wrappers;
 
 using Newtonsoft.Json.Linq;
 
-using StreamDock.Plugins.GoogleAPIs.GoogleAPIs.AdSenseManagement;
-
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
     /// <summary>
@@ -301,9 +299,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// Google API 쿼리 클래스의 인스턴스를 가져옵니다.
         /// </summary>
         /// <returns></returns>
-        private ActionProc GetApiInstance()
+        private ApiAction GetApiInstance()
         {
-            return new ActionProc(pluginSettings, item);
+            return new ApiAction(pluginSettings, item);
         }
         #endregion
     }

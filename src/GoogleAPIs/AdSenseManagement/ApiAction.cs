@@ -8,19 +8,17 @@ using BarRaider.SdTools;
 using Google.Apis.Adsense.v2;
 using Google.Apis.Services;
 
-using StreamDock.Plugins.GoogleAPIs.GoogleAPIs.AdSenseManagement;
-
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
     /// <summary>
     /// API 동작 정의 프로시저
     /// </summary>
-    internal class ActionProc : GoogleAPI
+    internal class ApiAction : GoogleAPI
     {
         PluginSettings pluginSettings { get; set; }
         Item item { get; set; }
 
-        internal ActionProc(PluginSettings pluginsettings, Item item)
+        internal ApiAction(PluginSettings pluginsettings, Item item)
         {
             this.pluginSettings = pluginsettings;
             this.item = item;
@@ -94,9 +92,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                         break;
                     case Resources.Dimensions:
                         item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metric, pluginSettings.Dimensions)].Totals.Cells[1].Value);
-
-                        //TODO 차트 이미지로 표현하는 코드
-                        //...
                         break;
                     default:
                         item.DisplayValues.OnlyOne("옵션 없음");

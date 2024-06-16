@@ -100,7 +100,7 @@
     <Compile Include="GoogleAPIs\GoogleAPIs.cs" />
     <Compile Include="helpers\ImageHelper.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\GoogleAPIQuery.cs" />
-    <Compile Include="GoogleAPIs\AdSenseManagement\ActionProc.cs" />
+    <Compile Include="GoogleAPIs\AdSenseManagement\ApiAction.cs" />
     <Compile Include="models\IPluginSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
