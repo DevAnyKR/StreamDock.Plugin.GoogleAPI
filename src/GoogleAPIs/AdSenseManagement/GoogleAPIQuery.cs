@@ -36,8 +36,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <returns>검색된 계정의 마지막 페이지입니다.</returns>
         internal IList<Account> GetAllAccounts()
         {
+#if DEBUG
             Logger.Instance.LogMessage(TracingLevel.INFO, "전체 계정 쿼리 시작...");
-
+#endif
             // 페이지에서 계정 목록을 검색하고 수신된 데이터를 표시합니다.
             string pageToken = null;
             ListAccountsResponse accountResponse = null;
@@ -50,9 +51,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 accountResponse = accountRequest.Execute();
                 pageToken = accountResponse.NextPageToken;
             } while (pageToken != null);
-
-            Logger.Instance.LogMessage(TracingLevel.INFO, "전체 계정 쿼리 완료...");
-
+            Logger.Instance.LogMessage(TracingLevel.INFO, "Accounts List Request Successful");
             // 기본 샘플에서 실행할 항목이 있도록 계정의 마지막 페이지를 반환합니다.
             return accountResponse.Accounts;
         }
@@ -81,6 +80,18 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 
             return payments;
         }
+        internal async Task<IList<Payment>> RunCallPaymentAsync()
+        {
+            IList<Payment> payments = null;
+
+            if (adSenseAccount != null)
+            {
+                var dataAsync = await service.Accounts.Payments.List(adSenseAccount.Name).ExecuteAsync();
+                payments = dataAsync.Payments;
+            }
+
+            return payments;
+        }
 
         /// <summary>
         /// 날짜 범위, 측정 항목으로 보고서를 생성합니다.
@@ -88,6 +99,27 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <param name="dateRangeEnum"></param>
         /// <param name="metricsEnum"></param>
         /// <returns></returns>
+        internal ReportResult RunCallReport(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum)
+        {
+            ReportResult reportResult = null;
+
+            if (adSenseAccount != null)
+            {
+                var report = service.Accounts.Reports.Generate(adSenseAccount.Name);
+
+                report.DateRange = dateRangeEnum;
+                report.Metrics = metricsEnum;
+
+                var result = report.Execute();
+
+                if (result.TotalMatchedRows > 0)
+                {
+                    reportResult = result;
+                }
+            }
+
+            return reportResult;
+        }
         internal async Task<ReportResult> RunCallReportAsync(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum)
         {
             ReportResult reportResult = null;
@@ -116,6 +148,28 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <param name="dateRangeEnum"></param>
         /// <param name="metricsEnum"></param>
         /// <returns></returns>
+        internal ReportResult RunCallReport(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum, DimensionsEnum dimensionsEnum)
+        {
+            ReportResult reportResult = null;
+
+            if (adSenseAccount != null)
+            {
+                var report = service.Accounts.Reports.Generate(adSenseAccount.Name);
+
+                report.DateRange = dateRangeEnum;
+                report.Metrics = metricsEnum;
+                report.Dimensions = dimensionsEnum;
+
+                var result = report.Execute();
+
+                if (result.TotalMatchedRows > 0)
+                {
+                    reportResult = result;
+                }
+            }
+
+            return reportResult;
+        }
         internal async Task<ReportResult> RunCallReportAsync(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum, DimensionsEnum dimensionsEnum)
         {
             ReportResult reportResult = null;

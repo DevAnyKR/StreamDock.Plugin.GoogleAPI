@@ -48,20 +48,20 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             }
         }
 
-        [JsonProperty(PropertyName = "metric")]
+        [JsonProperty(PropertyName = "metrics")]
         public string PiMetric { get; set; }
-        private MetricsEnum metric;
-        public MetricsEnum Metric
+        private MetricsEnum metrics;
+        public MetricsEnum Metrics
         {
             get
             {
                 var _ = PiMetric.TryParse<MetricsEnum>();
-                if (metric != _)
+                if (metrics != _)
                 {
-                    metric = _;
-                    OnPropertyChanged("Metric");
+                    metrics = _;
+                    OnPropertyChanged("Metrics");
                 }
-                return metric;
+                return metrics;
             }
         }
 

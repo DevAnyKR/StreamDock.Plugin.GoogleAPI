@@ -34,7 +34,7 @@ namespace StreamDock.Plugins.GoogleAPIs
                     new[] { AdsenseService.Scope.AdsenseReadonly },
                     "user", CancellationToken.None);
             }
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OAuth2 json 읽기 완료.");
+            Logger.Instance.LogMessage(TracingLevel.INFO, "Read client_secrets.json");
 
             return credential;
         }
