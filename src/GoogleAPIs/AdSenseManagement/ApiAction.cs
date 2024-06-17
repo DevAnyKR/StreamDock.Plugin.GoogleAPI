@@ -30,7 +30,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         internal async Task<Item> ExecuteAsync()
         {
             Item _item = this.item;
-            
+
             try
             {
                 // 서비스 생성
@@ -66,9 +66,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                         Item.ReportResults[key3] = await googleAPIQuery.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions);
                         break;
                 }
-                #if DEBUG
+#if DEBUG
                 Logger.Instance.LogMessage(TracingLevel.INFO, "보고서 저장 완료.");
-                #endif
+#endif
                 // 디스플레이용 데이터 가공
                 _item = SetDisplayValue();
             }
@@ -103,9 +103,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                         item.DisplayValues.OnlyOne("옵션 없음");
                         break;
                 }
-                #if DEBUG
+#if DEBUG
                 Logger.Instance.LogMessage(TracingLevel.INFO, "표시 값 저장 완료.");
-                #endif
+#endif
             }
             catch (Exception ex)
             {

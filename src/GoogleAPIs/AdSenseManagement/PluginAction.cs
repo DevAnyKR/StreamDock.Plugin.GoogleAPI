@@ -210,21 +210,21 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 
                 if (!CheckExistData())
                 {
-                    #if DEBUG
+#if DEBUG
                     Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 없음.");
-                    #endif
+#endif
                     item.DisplayValues.OnlyOne("Press Key...");
                 }
                 else
                 {
-                    #if DEBUG
+#if DEBUG
                     Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 발견.");
-                    #endif
+#endif
                     UpdateValues();
                 }
-                #if DEBUG
+#if DEBUG
                 Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
-                #endif
+#endif
                 await Connection.SetImageAsync(UpdateKeyImage(item, true), null, true); // 초기 이미지 출력
             }
             catch (Exception ex)
@@ -240,7 +240,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             try
             {
-                TitleParameters tp = new TitleParameters(new FontFamily("Arial"), FontStyle.Bold, 20, Color.White, true, TitleVerticalAlignment.Middle);
+                TitleParameters tp = new TitleParameters(new FontFamily("Arial"), FontStyle.Bold, 12, Color.White, true, TitleVerticalAlignment.Middle);
                 using (Image image = Tools.GenerateGenericKeyImage(out Graphics graphics))
                 {
                     graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
@@ -337,6 +337,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             return new ApiAction(pluginSettings, item);
         }
-#endregion
+        #endregion
     }
 }

@@ -36,9 +36,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <returns>검색된 계정의 마지막 페이지입니다.</returns>
         internal IList<Account> GetAllAccounts()
         {
-            #if DEBUG
+#if DEBUG
             Logger.Instance.LogMessage(TracingLevel.INFO, "전체 계정 쿼리 시작...");
-            #endif
+#endif
             // 페이지에서 계정 목록을 검색하고 수신된 데이터를 표시합니다.
             string pageToken = null;
             ListAccountsResponse accountResponse = null;
