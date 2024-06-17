@@ -6,6 +6,7 @@ using BarRaider.SdTools;
 
 using Google.Apis.Adsense.v2;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Calendar.v3;
 
 namespace StreamDock.Plugins.GoogleAPIs
 {
@@ -31,7 +32,10 @@ namespace StreamDock.Plugins.GoogleAPIs
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.FromStream(stream).Secrets,
-                    new[] { AdsenseService.Scope.AdsenseReadonly },
+                    new[] {
+                        AdsenseService.Scope.AdsenseReadonly,
+                        CalendarService.Scope.Calendar
+                    },
                     "user", CancellationToken.None);
             }
             Logger.Instance.LogMessage(TracingLevel.INFO, "Read client_secrets.json");

@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms.DataVisualization.Charting;
 
 using BarRaider.SdTools;
 using BarRaider.SdTools.Wrappers;
 
 using Newtonsoft.Json.Linq;
-namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
+
+namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 {
     /// <summary>
     /// manifest.json 에서 선언한 플러그인 UUID
     /// </summary>
-    [PluginActionId("kr.devany.googleapi.adsensemanagement")]
+    [PluginActionId("kr.devany.googleapi.googlecalendar")]
     public class PluginAction : KeypadBase
     {
         Item item { get; set; }
@@ -154,8 +155,15 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "KeyReleased called");
 
-            await DisplayBusyAsync();
-            await UpdateApiDataAsync();
+            if (CheckExistData())
+            {
+                System.Diagnostics.Process.Start(item.Events.First().HtmlLink);
+            }
+            else
+            {
+                await DisplayBusyAsync();
+                await UpdateApiDataAsync();
+            }
         }
 
         /// <summary>
@@ -200,13 +208,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <returns></returns>
         private bool CheckExistData()
         {
-            return pluginSettings.Resource switch
-            {
-                Resources.Payments => item.PaymentExists,
-                Resources.Reports => item.ReportExists && Item.ReportResults.ContainsKey(ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics)),
-                Resources.Dimensions => item.ReportExists && Item.ReportResults.ContainsKey(ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions)),
-                _ => false
-            };
+            return item.Events.Any();
         }
 
         /// <summary>
@@ -216,24 +218,14 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             try
             {
-
                 if (!CheckExistData())
                 {
-#if DEBUG
-                    Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 없음.");
-#endif
                     item.DisplayValues.OnlyOne("Press Key...");
                 }
                 else
                 {
-#if DEBUG
-                    Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 발견.");
-#endif
                     UpdateValues();
                 }
-#if DEBUG
-                Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
-#endif
                 await Connection.SetImageAsync(UpdateKeyImage(item, true), null, true); // 초기 이미지 출력
             }
             catch (Exception ex)
@@ -250,15 +242,15 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             try
             {
                 TitleParameters tp = new TitleParameters(new FontFamily("Arial"), FontStyle.Bold, 12, Color.White, true, TitleVerticalAlignment.Middle);
-                using (Image image = Tools.GenerateGenericKeyImage(out Graphics graphics))
+                using (Bitmap image = Tools.GenerateGenericKeyImage(out Graphics graphics))
                 {
                     graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
                     graphics.AddTextPath(tp, image.Height, image.Width, "Loading...", Color.Black, 7); //TODO 지역화
-                    graphics.Dispose();
 #if DEBUG
                     Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayBusyAsync: 스트림독으로 이미지 전송 중...");
 #endif
                     await Connection.SetImageAsync(image);
+                    graphics.Dispose();
                 }
             }
             catch (Exception ex)
@@ -301,34 +293,23 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             {
                 bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
 
-                switch (pluginSettings.Resource)
+                for (int i = 0; i < item.DisplayValues.Count; i++)
                 {
-                    case Resources.Payments:
-                    case Resources.Reports:
-                        for (int i = 0; i < item.DisplayValues.Count; i++)
-                        {
-                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i], new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
-                        }
-                        break;
-                    case Resources.Dimensions:
-                        if (initial)
-                        {
-                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[0], new SolidBrush(pluginSettings.FrontColor), 72, 72));
-                        }
-                        else
-                        {
-                            using (MemoryStream ms = new MemoryStream())
-                            {
-                                new ChartReport(pluginSettings).CreateChart().SaveImage(ms, ChartImageFormat.Bmp);
+                    var font = new Font("Arial", 32, FontStyle.Bold, GraphicsUnit.Pixel);
+                    var stringFormat = new StringFormat
+                    {
+                        Alignment = StringAlignment.Near,
+                        LineAlignment = StringAlignment.Center
+                    };
+                    var isRGB = stringFormat.Alignment == StringAlignment.Near;
 
-                                ms.Position = 0;
-                                using (var bitmap = new Bitmap(ms))
-                                {
-                                    bmp = new Bitmap(bitmap);
-                                }
-                            }
-                        }
-                        break;
+                    using (var graphics = Graphics.FromImage(bmp))
+                    {
+                        //font = ImageHelper.ResizeFont(graphics, item.DisplayValues[i], font);
+                        graphics.DrawString(item.DisplayValues[i], font, new SolidBrush(pluginSettings.FrontColor), !isRGB ? 72 : 5, (144 / (item.DisplayValues.Count + 1)) * (i + 1), stringFormat);
+                    }
+
+                    //bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i], new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
                 }
             }
             catch (Exception ex)
