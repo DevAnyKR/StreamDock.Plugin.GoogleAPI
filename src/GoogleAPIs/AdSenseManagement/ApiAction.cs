@@ -29,6 +29,8 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// </summary>
         internal async Task<Item> ExecuteAsync()
         {
+            Item _item = this.item;
+
             try
             {
                 // 서비스 생성
@@ -39,9 +41,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 });
 
                 // 구글 API 통신 인스턴스
-                GoogleAPIQuery managementApiConsumer = new GoogleAPIQuery(service, 50);
+                GoogleAPIQuery googleAPIQuery = new GoogleAPIQuery(service, 50);
 
-                string accountName = managementApiConsumer.GetAccountName();
+                string accountName = googleAPIQuery.GetAccountName();
                 if (Item.AccountName.IsNullOrEmpty())
                 {
                     Item.AccountName = accountName;
@@ -51,27 +53,31 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 switch (pluginSettings.Resource)
                 {
                     case Resources.Payments:
-                        Item.Payments = managementApiConsumer.RunCallPayment();
+                        Item.Payments = await googleAPIQuery.RunCallPaymentAsync();
                         break;
                     case Resources.Reports:
-                        var key = ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metric);
+                        var key2 = ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics);
 
-                        Item.ReportResults[key] = await managementApiConsumer.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metric);
+                        Item.ReportResults[key2] = await googleAPIQuery.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metrics);
                         break;
                     case Resources.Dimensions:
+                        var key3 = ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions);
 
+                        Item.ReportResults[key3] = await googleAPIQuery.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions);
                         break;
                 }
-
+#if DEBUG
+                Logger.Instance.LogMessage(TracingLevel.INFO, "보고서 저장 완료.");
+#endif
                 // 디스플레이용 데이터 가공
-                item = SetDisplayValue();
+                _item = SetDisplayValue();
             }
             catch (Exception ex)
             {
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
-            return item;
+            return _item;
         }
 
         /// <summary>
@@ -88,15 +94,18 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                         item.DisplayValues.OnlyOne(Item.Payments.First().Amount);
                         break;
                     case Resources.Reports:
-                        item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metric)].Rows.First().Cells.First().Value);
+                        item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics)].Rows.First().Cells.First().Value);
                         break;
                     case Resources.Dimensions:
-                        item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metric, pluginSettings.Dimensions)].Totals.Cells[1].Value);
+                        item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions)].Totals.Cells[1].Value);
                         break;
                     default:
                         item.DisplayValues.OnlyOne("옵션 없음");
                         break;
                 }
+#if DEBUG
+                Logger.Instance.LogMessage(TracingLevel.INFO, "표시 값 저장 완료.");
+#endif
             }
             catch (Exception ex)
             {
