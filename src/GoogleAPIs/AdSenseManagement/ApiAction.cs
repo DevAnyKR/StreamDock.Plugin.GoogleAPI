@@ -46,7 +46,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 string accountName = googleAPIQuery.GetAccountName();
                 if (Item.AccountName.IsNullOrEmpty())
                 {
-                    Logger.Instance.LogMessage(TracingLevel.INFO, "AccountName 조회 완료.");
                     Item.AccountName = accountName;
                 }
 
@@ -67,9 +66,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                         Item.ReportResults[key3] = await googleAPIQuery.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions);
                         break;
                 }
-
+                #if DEBUG
                 Logger.Instance.LogMessage(TracingLevel.INFO, "보고서 저장 완료.");
-
+                #endif
                 // 디스플레이용 데이터 가공
                 _item = SetDisplayValue();
             }
@@ -104,7 +103,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                         item.DisplayValues.OnlyOne("옵션 없음");
                         break;
                 }
+                #if DEBUG
                 Logger.Instance.LogMessage(TracingLevel.INFO, "표시 값 저장 완료.");
+                #endif
             }
             catch (Exception ex)
             {
