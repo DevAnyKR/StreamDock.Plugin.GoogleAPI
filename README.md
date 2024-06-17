@@ -30,7 +30,7 @@
 5. OAuth 동의 화면을 생성합니다.
 
 ## Conditions (일반 사용자용)
-1. 테스트 앱은 사용자 인증 제한이 있습니다. 서비스 제공자(devany.kr@gmail.com)에게 사용하려는 구글 계정(이메일 주소)을 알려줍니다.
+1. 테스트 앱은 사용자 인증 제한(100명)이 있습니다. 서비스 제공자(devany.kr@gmail.com)에게 사용하려는 구글 계정(이메일 주소)을 알려줍니다.
     * 사용자에게 client_secrets.json 파일을 보내드립니다. kr.devany.googleapi.sdPlugin\bin 폴더에 붙여넣으면 됩니다.
 2. 계정이 등록되면 서비스를 이용할 수 있습니다.
 
