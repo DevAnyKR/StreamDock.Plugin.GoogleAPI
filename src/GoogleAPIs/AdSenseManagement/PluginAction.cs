@@ -210,15 +210,21 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 
                 if (!CheckExistData())
                 {
+                    #if DEBUG
                     Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 없음.");
+                    #endif
                     item.DisplayValues.OnlyOne("Press Key...");
                 }
                 else
                 {
+                    #if DEBUG
                     Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 발견.");
+                    #endif
                     UpdateValues();
                 }
+                #if DEBUG
                 Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
+                #endif
                 await Connection.SetImageAsync(UpdateKeyImage(item, true), null, true); // 초기 이미지 출력
             }
             catch (Exception ex)
@@ -238,10 +244,11 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 using (Image image = Tools.GenerateGenericKeyImage(out Graphics graphics))
                 {
                     graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
-                    graphics.AddTextPath(tp, image.Height, image.Width, "처리 중...", Color.Black, 7);
+                    graphics.AddTextPath(tp, image.Height, image.Width, "Loading...", Color.Black, 7); //TODO 지역화
                     graphics.Dispose();
-
+#if DEBUG
                     Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayBusyAsync: 스트림독으로 이미지 전송 중...");
+#endif
                     await Connection.SetImageAsync(image);
                 }
             }
@@ -259,7 +266,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             try
             {
                 item = await GetApiInstance().ExecuteAsync();
-                Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: 스트림독으로 이미지 전송 중...");
+                Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
                 await Connection.SetImageAsync(UpdateKeyImage(item), null, true);
             }
             catch (Exception ex)
@@ -330,6 +337,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             return new ApiAction(pluginSettings, item);
         }
-        #endregion
+#endregion
     }
 }
