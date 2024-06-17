@@ -39,6 +39,25 @@
       "PropertyInspectorPath": "propertyInspector/adsensemanagement/index.html"
     },
     {
+      "Icon": "images/calendar",
+      "Name": "Google Calendar",
+      "States": [
+        {
+          "FontSize": "10",
+          "TitleAlignment": "bottom",
+          "Image": "images/calendar"
+        }
+      ],
+      "Controllers": [
+        "Keypad",
+        "Information"
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "구글 캘린더",
+      "UUID": "kr.devany.googleapi.googlecalendar",
+      "PropertyInspectorPath": "propertyInspector/googlecalendar/index.html"
+    },
+    {
       "Icon": "images/gmail.png",
       "Name": "Gmail",
       "States": [

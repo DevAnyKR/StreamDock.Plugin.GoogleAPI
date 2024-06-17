@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 using BarRaider.SdTools;
 
 using Google.Apis.Adsense.v2;
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
@@ -20,26 +17,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
     {
         PluginSettings pluginSettings { get; set; }
         Item item { get; set; }
-
-        /// <summary>
-        /// Client Secret 정보를 불러옵니다.
-        /// </summary>
-        /// <returns></returns>
-        protected async Task<UserCredential> GetClientSecretAsync()
-        {
-            UserCredential credential;
-
-            using (var stream = new FileStream(googleClientSecretsJson, FileMode.Open, FileAccess.Read))
-            {
-                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.FromStream(stream).Secrets,
-                    new[] { AdsenseService.Scope.AdsenseReadonly },
-                    "user", CancellationToken.None);
-            }
-            Logger.Instance.LogMessage(TracingLevel.INFO, "Read client_secrets.json");
-
-            return credential;
-        }
 
         internal ApiAction(PluginSettings pluginsettings, Item item)
         {
