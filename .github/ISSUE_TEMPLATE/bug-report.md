@@ -13,7 +13,7 @@ assignees: ''
  - API name: 
 
 **Describe the bug**
-▶️
+▶️ 
 
 
 **Frequency**
@@ -25,14 +25,14 @@ assignees: ''
 Steps to reproduce the behavior:
 1. 
 
-**Expected behavior**
+**I want this result...**
 ▶️ 
 
-**I want this result...**
-▶️
+**Actual result**
+▶️ 
 
 **Screenshots**
-▶️
+▶️ 
 
 **Additional context**
 ▶️
