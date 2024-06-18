@@ -46,7 +46,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
 
-            if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"DevAny\StreamDock.Plugins\GoogleAPI\Google.Apis.Auth.OAuth2.Responses.TokenResponse-user")))
+            if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), GoogleAPI.tokenPath, GoogleAPI.tokenFile)))
             {
                 await DisplayInitialAsync();
             }
@@ -226,7 +226,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
                 {
                     UpdateValues();
                 }
-                await Connection.SetImageAsync(UpdateKeyImage(item, true), null, true); // 초기 이미지 출력
+                await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
             }
             catch (Exception ex)
             {
@@ -268,7 +268,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             {
                 item = await GetApiInstance().ExecuteAsync();
                 Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
-                await Connection.SetImageAsync(UpdateKeyImage(item), null, true);
+                await Connection.SetImageAsync(UpdateKeyImage(item));
             }
             catch (Exception ex)
             {

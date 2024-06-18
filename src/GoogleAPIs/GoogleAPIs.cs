@@ -2,8 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using BarRaider.SdTools;
-
 using Google.Apis.Adsense.v2;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Calendar.v3;
@@ -15,9 +13,14 @@ namespace StreamDock.Plugins.GoogleAPIs
     /// </summary>
     internal abstract class GoogleAPI
     {
+        public static readonly string clientSecretsFile = "client_secrets.json";
+        public static readonly string tokenPath = @"DevAny\StreamDock.Plugins\GoogleAPI";
+        public static string tokenUser = "user";
+        public static readonly string tokenFile = $"Google.Apis.Auth.OAuth2.Responses.TokenResponse-{tokenUser}";
+
         internal GoogleAPI()
         {
-            GoogleWebAuthorizationBroker.Folder = @"DevAny\StreamDock.Plugins\GoogleAPI";
+            GoogleWebAuthorizationBroker.Folder = tokenPath;
         }
 
         /// <summary>
@@ -28,7 +31,7 @@ namespace StreamDock.Plugins.GoogleAPIs
         {
             UserCredential credential;
 
-            using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(clientSecretsFile, FileMode.Open, FileAccess.Read))
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.FromStream(stream).Secrets,
@@ -36,10 +39,11 @@ namespace StreamDock.Plugins.GoogleAPIs
                         AdsenseService.Scope.AdsenseReadonly,
                         CalendarService.Scope.Calendar
                     },
-                    "user", CancellationToken.None);
+                    tokenUser, CancellationToken.None);
             }
-            Logger.Instance.LogMessage(TracingLevel.INFO, "Read client_secrets.json");
-
+#if DEBUG
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Read {clientSecretsFile}");
+#endif
             return credential;
         }
     }

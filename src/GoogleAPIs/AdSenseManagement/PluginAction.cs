@@ -45,7 +45,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
 
-            if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"DevAny\StreamDock.Plugins\GoogleAPI\Google.Apis.Auth.OAuth2.Responses.TokenResponse-user")))
+            if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), GoogleAPI.tokenPath, GoogleAPI.tokenFile)))
             {
                 await DisplayInitialAsync();
             }
@@ -234,7 +234,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 #if DEBUG
                 Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
 #endif
-                await Connection.SetImageAsync(UpdateKeyImage(item, true), null, true); // 초기 이미지 출력
+                await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
             }
             catch (Exception ex)
             {
@@ -276,7 +276,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             {
                 item = await GetApiInstance().ExecuteAsync();
                 Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
-                await Connection.SetImageAsync(UpdateKeyImage(item), null, true);
+                await Connection.SetImageAsync(UpdateKeyImage(item));
             }
             catch (Exception ex)
             {
@@ -319,7 +319,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                         {
                             using (MemoryStream ms = new MemoryStream())
                             {
-                                new ChartReport(pluginSettings).CreateChart().SaveImage(ms, ChartImageFormat.Bmp);
+                                new ChartReport(pluginSettings).CreateChart()?.SaveImage(ms, ChartImageFormat.Bmp);
 
                                 ms.Position = 0;
                                 using (var bitmap = new Bitmap(ms))
