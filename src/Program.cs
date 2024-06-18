@@ -1,6 +1,4 @@
-﻿using System;
-
-using BarRaider.SdTools;
+﻿using BarRaider.SdTools;
 
 namespace StreamDock.Plugins
 {
@@ -8,6 +6,7 @@ namespace StreamDock.Plugins
     {
         internal static void Main(string[] args)
         {
+
             Logger.Instance.LogMessage(TracingLevel.INFO, "Main called");
             SDWrapper.Run(args);
         }
