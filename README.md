@@ -53,5 +53,7 @@
 - Google.Apis
 - Google.Apis.Adsense.v2
 - Google.Apis.Auth
+    - System.Management
+      - System.CodeDom
 - Newtonsoft.Json
 - StreamDeck-Tools
