@@ -27,11 +27,11 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 
         internal void Init()
         {
-            Accounts = new List<Account>();
-            Payments = new List<Payment>();
-            Sites = new List<Site>();
-            ReportResults = new Dictionary<IReportKey, ReportResult> { };
-            ReportCharts = new Dictionary<IReportKey, Image> { };
+            Accounts?.Clear();
+            Payments?.Clear();
+            Sites?.Clear();
+            ReportResults?.Clear();
+            ReportCharts?.Clear();
         }
     }
 }

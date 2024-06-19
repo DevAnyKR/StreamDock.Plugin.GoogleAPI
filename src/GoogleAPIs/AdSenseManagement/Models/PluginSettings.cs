@@ -14,11 +14,13 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
     public class PluginSettings : INotifyPropertyChanged
     {
+        //? Json 속성 이름과 CS 속성 이름이 중복되면 안 됨. 대소문자 구분.
         [JsonProperty(PropertyName = "resource")]
         public string PiResource { get; set; } = "Payments";
 
         private Resources resources;
-        public Resources Resource {
+        public Resources Resource
+        {
             get
             {
                 var _ = PiResource.TryParse<Resources>();
@@ -90,6 +92,10 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         public string PiBackColor { get; set; }
         public Color BackColor => GraphicsTools.ColorFromHex(PiBackColor);
 
+        [JsonProperty(PropertyName = "userTokenName")]
+        public string PiUserTokenName { get; set; }
+        public string UserTokenName => PiUserTokenName;
+
         public ValueTypes ValueType { get; set; }
 
         public static PluginSettings CreateDefaultSettings()
@@ -101,6 +107,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             instance.PiDimensions = String.Empty;
             instance.PiFrontColor = "#FFFFFF";
             instance.PiBackColor = String.Empty;
+            instance.PiUserTokenName = "user";
             instance.ValueType = ValueTypes.String;
             return instance;
         }

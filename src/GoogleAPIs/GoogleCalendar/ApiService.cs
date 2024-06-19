@@ -3,31 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 
 namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 {
-    internal class ApiService
+    internal class ApiService: GoogleAuth
     {
-        private CalendarService service;
-
+        readonly CalendarService service;
         /// <summary>
         /// <see cref="ApiService"/> 클래스의 새 인스턴스를 초기화합니다.
         /// </summary> 
         /// <param name="service">요청을 실행할 애드센스 서비스 개체입니다.</param>
         /// <param name="maxListPageSize">검색할 최대 페이지 크기입니다.</param>
-        internal ApiService(CalendarService service)
+        internal ApiService(UserCredential userCredential, CalendarService service)
         {
             this.service = service;
-        }
-        /// <summary>
-        /// 서비스 생성
-        /// </summary>
-        /// <returns></returns>
-        internal static async Task<ApiService> GetService()
-        {
-            return new ApiService(new CalendarService(await GoogleAuth.GetServiceInitializer()));
+            base.userCredential = userCredential;
         }
         /// <summary>
         /// 계정의 모든 캘린더를 가져옵니다.
