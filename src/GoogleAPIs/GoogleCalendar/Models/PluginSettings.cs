@@ -25,12 +25,17 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         public string PiBackColor { get; set; }
         public Color BackColor => GraphicsTools.ColorFromHex(PiBackColor);
 
+        [JsonProperty(PropertyName = "userTokenName")]
+        public string PiUserTokenName { get; set; }
+        public string UserTokenName => PiUserTokenName;
+
         public static PluginSettings CreateDefaultSettings()
         {
             PluginSettings instance = new PluginSettings();
             instance.PiCalendarList = String.Empty;
             instance.PiFrontColor = "#FFFFFF";
             instance.PiBackColor = String.Empty;
+            instance.PiUserTokenName = "user";
             return instance;
         }
 

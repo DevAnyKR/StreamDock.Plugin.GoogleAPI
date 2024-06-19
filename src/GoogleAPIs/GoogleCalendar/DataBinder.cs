@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 using BarRaider.SdTools;
 
+using Google.Apis.Calendar.v3;
+
 namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 {
     /// <summary>
@@ -11,13 +13,15 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
     /// </summary>
     internal class DataBinder
     {
-        PluginSettings pluginSettings { get; set; }
-        Item item { get; set; }
+        PluginSettings pluginSettings;
+        Item item;
+        GoogleAuth googleAuth;
 
         internal DataBinder(PluginSettings pluginsettings, Item item)
         {
             this.pluginSettings = pluginsettings;
             this.item = item;
+            this.googleAuth = new();
         }
         /// <summary>
         /// 키가 눌렸을 때 동작 정의. Google API 통신.
@@ -27,7 +31,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             try
             {
                 // 구글 API 통신 인스턴스
-                ApiService apiSevice = await ApiService.GetService();
+                ApiService apiSevice = new ApiService(googleAuth.userCredential, new CalendarService(await googleAuth.GetServiceInitializerAsync(pluginSettings.UserTokenName)));
 
                 if (pluginSettings.CalendarSummary.IsNullOrEmpty())
                 {
@@ -62,7 +66,8 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             {
                 item.DisplayValues.Clear();
 
-                foreach (var value in item.Events) {
+                foreach (var value in item.Events)
+                {
                     if (value.End.Date.IsDateTime())
                     {
 

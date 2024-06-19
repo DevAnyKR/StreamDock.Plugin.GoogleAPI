@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,7 +20,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
     {
         Item item;
         PluginSettings pluginSettings;
-        DataBinder apiAction;
+        DataBinder dataBinder;
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
@@ -35,6 +35,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             Connection.OnPropertyInspectorDidDisappear += Connection_OnPropertyInspectorDidDisappear;
             Connection.OnSendToPlugin += Connection_OnSendToPlugin;
             Connection.OnTitleParametersDidChange += Connection_OnTitleParametersDidChange;
+            pluginSettings.PropertyChanged += PropertyChanged;
         }
 
         /// <summary>
@@ -46,8 +47,9 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         private async void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
+            //Tools.AutoPopulateSettings(pluginSettings, e.Event.Payload.Settings);
 
-            if (!GoogleAuth.CredentialIsExist())
+            if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
             {
                 await DisplayInitialAsync();
             }
@@ -55,6 +57,14 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             {
                 await DisplayBusyAsync();
                 await UpdateApiDataAsync();
+                //if (!CheckExistData())
+                //{
+                //    await DisplayInitialAsync();
+                //}
+                //else
+                //{
+                //    await DisplayPreValueAsync();
+                //}
             }
         }
 
@@ -130,6 +140,10 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnApplicationDidLaunch Event Handled");
         }
+        private void PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"{e.PropertyName} Property Changed");
+        }
 
         /// <summary>
         /// 스트림독에 플러그인이 표시되지 않으면 호출됩니다.
@@ -156,7 +170,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "KeyReleased called");
 
-            if (CheckExistData())
+            if (GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName) && CheckExistData())
             {
                 System.Diagnostics.Process.Start(item.Events.First().HtmlLink);
             }
@@ -183,14 +197,29 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedSettings called");
 
             Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
-
             await SaveSettingsAsync();
-            await DisplayInitialAsync();
+
+            if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+            {
+                item.Init();
+                dataBinder = null;
+                await DisplayInitialAsync();
+            }
+            else if (CheckExistData())
+            {
+                await DisplayBusyAsync();
+                await UpdateApiDataAsync();
+            }
+            else
+            {
+                await DisplayInitialAsync();
+            }
         }
 
         public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedGlobalSettings called");
+            Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
         }
 
         #region Private Methods
@@ -219,14 +248,23 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             try
             {
-                if (!CheckExistData())
-                {
-                    item.DisplayValues.OnlyOne("Press Key...");
-                }
-                else
-                {
-                    UpdateValues();
-                }
+                item.DisplayValues.OnlyOne("Press Key...");
+                await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
+            }
+        }
+        private async Task DisplayPreValueAsync()
+        {
+            try
+            {
+                UpdateValues();
+#if DEBUG
+                Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
+#endif
                 await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
             }
             catch (Exception ex)
@@ -287,7 +325,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <summary>
         /// 키 이미지를 변경합니다. 출력할 정보를 이미지로 변환합니다.
         /// </summary>
-        private Bitmap UpdateKeyImage(Item item, bool initial = false)
+        private Bitmap UpdateKeyImage(Item item, bool autoSize = false)
         {
             Bitmap bmp = null;
             try
@@ -306,7 +344,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 
                     using (var graphics = Graphics.FromImage(bmp))
                     {
-                        //font = ImageHelper.ResizeFont(graphics, item.DisplayValues[i], font);
+                        font = autoSize ? ImageHelper.ResizeFont(graphics, item.DisplayValues[i], font) : font;
                         graphics.DrawString(item.DisplayValues[i], font, new SolidBrush(pluginSettings.FrontColor), !isRGB ? 72 : 5, (144 / (item.DisplayValues.Count + 1)) * (i + 1), stringFormat);
                     }
 
@@ -326,7 +364,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <returns></returns>
         private DataBinder GetApiInstance()
         {
-            return apiAction ?? new DataBinder(pluginSettings, item);
+            return dataBinder ?? new DataBinder(pluginSettings, item);
         }
         #endregion
     }

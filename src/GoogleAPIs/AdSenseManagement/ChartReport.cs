@@ -12,7 +12,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
     internal class ChartReport
     {
-        PluginSettings pluginSettings;
+        readonly PluginSettings pluginSettings;
 
         internal ChartReport(PluginSettings pluginSettings)
         {

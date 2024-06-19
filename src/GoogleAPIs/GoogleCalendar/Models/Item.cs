@@ -26,6 +26,10 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 
         internal void Init()
         {
+            Calendars?.Clear();
+            calendarID = string.Empty;
+            Events?.Clear();
+            DisplayValues?.Clear();
         }
     }
 }

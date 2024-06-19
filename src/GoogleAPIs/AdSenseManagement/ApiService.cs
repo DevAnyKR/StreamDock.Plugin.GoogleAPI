@@ -6,6 +6,7 @@ using BarRaider.SdTools;
 
 using Google.Apis.Adsense.v2; // https://googleapis.dev/dotnet/Google.Apis.Adsense.v2/latest/api/Google.Apis.Adsense.v2.html
 using Google.Apis.Adsense.v2.Data;
+using Google.Apis.Auth.OAuth2;
 
 using DateRangeEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.DateRangeEnum;
 using DimensionsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.DimensionsEnum;
@@ -16,28 +17,21 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
     /// <summary>
     /// 구글 API 서비스 대리자
     /// </summary>
-    internal class ApiService
+    internal class ApiService : GoogleAuth
     {
-        private AdsenseService service;
-        private int maxListPageSize = 50;
-        private Account adSenseAccount;
+        readonly AdsenseService service;
+        readonly int maxListPageSize = 50;
+        Account adSenseAccount;
 
         /// <summary>
         /// <see cref="ApiService"/> 클래스의 새 인스턴스를 초기화합니다.
         /// </summary> 
         /// <param name="service">요청을 실행할 애드센스 서비스 개체입니다.</param>
         /// <param name="maxListPageSize">검색할 최대 페이지 크기입니다.</param>
-        private ApiService(AdsenseService service)
+        internal ApiService(UserCredential userCredential, AdsenseService service)
         {
             this.service = service;
-        }
-        /// <summary>
-        /// 서비스 생성
-        /// </summary>
-        /// <returns></returns>
-        internal static async Task<ApiService> GetService()
-        {
-            return new ApiService(new AdsenseService(await GoogleAuth.GetServiceInitializer()));
+            base.userCredential = userCredential;
         }
         /// <summary>
         /// 로그인한 사용자의 모든 계정을 가져오고 출력합니다.

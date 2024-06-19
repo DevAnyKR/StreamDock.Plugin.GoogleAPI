@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 using BarRaider.SdTools;
 
+using Google.Apis.Adsense.v2;
+
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
     /// <summary>
@@ -12,25 +14,24 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
     /// </summary>
     internal class DataBinder
     {
-        PluginSettings pluginSettings { get; set; }
-        Item item { get; set; }
-
+        PluginSettings pluginSettings;
+        Item item;
+        GoogleAuth googleAuth;
         internal DataBinder(PluginSettings pluginsettings, Item item)
         {
             this.pluginSettings = pluginsettings;
             this.item = item;
+            this.googleAuth = new();
         }
         /// <summary>
         /// 키가 눌렸을 때 동작 정의. Google API 통신.
         /// </summary>
         internal async Task<Item> ExecuteAsync()
         {
-            Item _item = this.item;
-
             try
             {
                 // 구글 API 통신 인스턴스
-                ApiService apiSevice = await ApiService.GetService();
+                ApiService apiSevice = new ApiService(googleAuth.userCredential, new AdsenseService(await googleAuth.GetServiceInitializerAsync(pluginSettings.UserTokenName)));
 
                 string accountName = apiSevice.GetAccountName();
                 if (Item.AccountName.IsNullOrEmpty())
@@ -59,14 +60,14 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 Logger.Instance.LogMessage(TracingLevel.INFO, "보고서 저장 완료.");
 #endif
                 // 디스플레이용 데이터 가공
-                _item = SetDisplayValue();
+                item = SetDisplayValue();
             }
             catch (Exception ex)
             {
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
-            return _item;
+            return item;
         }
 
         /// <summary>

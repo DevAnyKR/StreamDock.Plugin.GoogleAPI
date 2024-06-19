@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
     {
         Item item;
         PluginSettings pluginSettings;
-        DataBinder apiAction;
+        DataBinder dataBinder;
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
@@ -34,8 +35,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             Connection.OnPropertyInspectorDidDisappear += Connection_OnPropertyInspectorDidDisappear;
             Connection.OnSendToPlugin += Connection_OnSendToPlugin;
             Connection.OnTitleParametersDidChange += Connection_OnTitleParametersDidChange;
+            pluginSettings.PropertyChanged += PropertyChanged;
         }
-
+        #region Event
         /// <summary>
         /// 제목이 변경되거나 스트림독에 플러그인이 나타날 때 호출됩니다.titleParametersDidChange
         /// 하드웨어 기준.
@@ -45,15 +47,25 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         private async void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
+            //Tools.AutoPopulateSettings(pluginSettings, e.Event.Payload.Settings);
 
-            if (!GoogleAuth.CredentialIsExist())
+            if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
             {
                 await DisplayInitialAsync();
             }
             else
             {
+                //TODO 자동 갱신 or 수동 갱신
                 await DisplayBusyAsync();
                 await UpdateApiDataAsync();
+                //if (!CheckExistData())
+                //{
+                //    await DisplayInitialAsync();
+                //}
+                //else
+                //{
+                //    await DisplayPreValueAsync();
+                //}
             }
         }
 
@@ -129,7 +141,12 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnApplicationDidLaunch Event Handled");
         }
-
+        private void PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"{e.PropertyName} Property Changed");
+        }
+        #endregion
+        #region Steam Dock
         /// <summary>
         /// 스트림독에 플러그인이 표시되지 않으면 호출됩니다.
         /// </summary>
@@ -175,16 +192,31 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedSettings called");
 
             Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
+            await SaveSettingsAsync(); // 스트림독으로 설정 업로드
 
-            await SaveSettingsAsync();
-            await DisplayInitialAsync();
+            if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+            {
+                item.Init();
+                dataBinder = null;
+                await DisplayInitialAsync();
+            }
+            else if (CheckExistData())
+            {
+                await DisplayBusyAsync();
+                await UpdateApiDataAsync();
+            }
+            else
+            {
+                await DisplayInitialAsync();
+            }
         }
 
         public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedGlobalSettings called");
+            Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
         }
-
+        #endregion
         #region Private Methods
         /// <summary>
         /// 설정 값을 스트림독으로 전달합니다.
@@ -217,21 +249,23 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             try
             {
-
-                if (!CheckExistData())
-                {
+                item.DisplayValues.OnlyOne("Press Key...");
 #if DEBUG
-                    Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 없음.");
+                Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
 #endif
-                    item.DisplayValues.OnlyOne("Press Key...");
-                }
-                else
-                {
-#if DEBUG
-                    Logger.Instance.LogMessage(TracingLevel.INFO, "기존 데이터 발견.");
-#endif
-                    UpdateValues();
-                }
+                await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
+            }
+        }
+        private async Task DisplayPreValueAsync()
+        {
+            try
+            {
+                UpdateValues();
 #if DEBUG
                 Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
 #endif
@@ -345,7 +379,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <returns></returns>
         private DataBinder GetApiInstance()
         {
-            return apiAction ?? new DataBinder(pluginSettings, item);
+            return dataBinder ?? new DataBinder(pluginSettings, item);
         }
         #endregion
     }
