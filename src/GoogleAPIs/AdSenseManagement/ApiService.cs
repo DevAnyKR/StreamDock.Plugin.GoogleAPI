@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using BarRaider.SdTools;
 
@@ -7,29 +8,37 @@ using Google.Apis.Adsense.v2; // https://googleapis.dev/dotnet/Google.Apis.Adsen
 using Google.Apis.Adsense.v2.Data;
 
 using DateRangeEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.DateRangeEnum;
-using MetricsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.MetricsEnum;
 using DimensionsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.DimensionsEnum;
-using System.Threading.Tasks;
+using MetricsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.MetricsEnum;
 
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
-    internal class GoogleAPIQuery
+    /// <summary>
+    /// 구글 API 서비스 대리자
+    /// </summary>
+    internal class ApiService
     {
         private AdsenseService service;
-        private int maxListPageSize;
+        private int maxListPageSize = 50;
         private Account adSenseAccount;
 
         /// <summary>
-        /// <see cref="GoogleAPIQuery"/> 클래스의 새 인스턴스를 초기화합니다.
+        /// <see cref="ApiService"/> 클래스의 새 인스턴스를 초기화합니다.
         /// </summary> 
         /// <param name="service">요청을 실행할 애드센스 서비스 개체입니다.</param>
         /// <param name="maxListPageSize">검색할 최대 페이지 크기입니다.</param>
-        internal GoogleAPIQuery(AdsenseService service, int maxListPageSize)
+        private ApiService(AdsenseService service)
         {
             this.service = service;
-            this.maxListPageSize = maxListPageSize;
         }
-
+        /// <summary>
+        /// 서비스 생성
+        /// </summary>
+        /// <returns></returns>
+        internal static async Task<ApiService> GetService()
+        {
+            return new ApiService(new AdsenseService(await GoogleAuth.GetServiceInitializer()));
+        }
         /// <summary>
         /// 로그인한 사용자의 모든 계정을 가져오고 출력합니다.
         /// </summary>

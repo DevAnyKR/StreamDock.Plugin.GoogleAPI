@@ -18,8 +18,9 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
     [PluginActionId("kr.devany.googleapi.googlecalendar")]
     public class PluginAction : KeypadBase
     {
-        Item item { get; set; }
-        PluginSettings pluginSettings { get; set; }
+        Item item;
+        PluginSettings pluginSettings;
+        DataBinder apiAction;
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
@@ -46,7 +47,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
 
-            if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), GoogleAPI.tokenPath, GoogleAPI.tokenFile)))
+            if (!GoogleAuth.CredentialIsExist())
             {
                 await DisplayInitialAsync();
             }
@@ -323,9 +324,9 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// Google API 쿼리 클래스의 인스턴스를 가져옵니다.
         /// </summary>
         /// <returns></returns>
-        private ApiAction GetApiInstance()
+        private DataBinder GetApiInstance()
         {
-            return new ApiAction(pluginSettings, item);
+            return apiAction ?? new DataBinder(pluginSettings, item);
         }
         #endregion
     }

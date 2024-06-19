@@ -5,25 +5,21 @@ using System.Threading.Tasks;
 
 using BarRaider.SdTools;
 
-using Google.Apis.Adsense.v2;
-using Google.Apis.Services;
-
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
     /// <summary>
     /// API 동작 정의 프로시저
     /// </summary>
-    internal class ApiAction : GoogleAPI
+    internal class DataBinder
     {
         PluginSettings pluginSettings { get; set; }
         Item item { get; set; }
 
-        internal ApiAction(PluginSettings pluginsettings, Item item)
+        internal DataBinder(PluginSettings pluginsettings, Item item)
         {
             this.pluginSettings = pluginsettings;
             this.item = item;
         }
-
         /// <summary>
         /// 키가 눌렸을 때 동작 정의. Google API 통신.
         /// </summary>
@@ -33,17 +29,10 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 
             try
             {
-                // 서비스 생성
-                var service = new AdsenseService(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = await GetClientSecretAsync(),
-                    ApplicationName = "StreamDock Plugin"
-                });
-
                 // 구글 API 통신 인스턴스
-                GoogleAPIQuery googleAPIQuery = new GoogleAPIQuery(service, 50);
+                ApiService apiSevice = await ApiService.GetService();
 
-                string accountName = googleAPIQuery.GetAccountName();
+                string accountName = apiSevice.GetAccountName();
                 if (Item.AccountName.IsNullOrEmpty())
                 {
                     Item.AccountName = accountName;
@@ -53,17 +42,17 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 switch (pluginSettings.Resource)
                 {
                     case Resources.Payments:
-                        Item.Payments = await googleAPIQuery.RunCallPaymentAsync();
+                        Item.Payments = await apiSevice.RunCallPaymentAsync();
                         break;
                     case Resources.Reports:
                         var key2 = ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics);
 
-                        Item.ReportResults[key2] = await googleAPIQuery.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metrics);
+                        Item.ReportResults[key2] = await apiSevice.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metrics);
                         break;
                     case Resources.Dimensions:
                         var key3 = ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions);
 
-                        Item.ReportResults[key3] = await googleAPIQuery.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions);
+                        Item.ReportResults[key3] = await apiSevice.RunCallReportAsync(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions);
                         break;
                 }
 #if DEBUG

@@ -10,7 +10,7 @@ using Google.Apis.Adsense.v2.Data;
 
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
-    internal class ChartReport : GoogleAPI
+    internal class ChartReport
     {
         PluginSettings pluginSettings;
 
