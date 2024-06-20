@@ -48,7 +48,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         private async void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
-            //Tools.AutoPopulateSettings(pluginSettings, e.Event.Payload.Settings);
 
             if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
             {
@@ -59,14 +58,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 //TODO 자동 갱신 or 수동 갱신
                 await DisplayBusyAsync();
                 await UpdateApiDataAsync();
-                //if (!CheckExistData())
-                //{
-                //    await DisplayInitialAsync();
-                //}
-                //else
-                //{
-                //    await DisplayPreValueAsync();
-                //}
             }
         }
 

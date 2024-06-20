@@ -320,8 +320,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// </summary>
         private Bitmap UpdateKeyImage(Item item, bool autoSize = false)
         {
-            Bitmap bmp = null;
-            bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
+            Bitmap bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
 
             for (int i = 0; i < item.DisplayValues.Count; i++)
             {
@@ -338,8 +337,6 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
                     font = autoSize ? ImageHelper.ResizeFont(graphics, item.DisplayValues[i], font) : font;
                     graphics.DrawString(item.DisplayValues[i], font, new SolidBrush(pluginSettings.FrontColor), !isRGB ? 72 : 5, (144 / (item.DisplayValues.Count + 1)) * (i + 1), stringFormat);
                 }
-
-                //bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i], new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
             }
 
             return bmp;
