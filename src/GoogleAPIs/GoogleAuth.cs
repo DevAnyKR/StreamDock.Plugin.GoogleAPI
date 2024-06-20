@@ -8,6 +8,7 @@ using BarRaider.SdTools;
 using Google.Apis.Adsense.v2;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Calendar.v3;
+using Google.Apis.Gmail.v1;
 using Google.Apis.Oauth2.v2;
 using Google.Apis.Services;
 
@@ -43,7 +44,8 @@ namespace StreamDock.Plugins.GoogleAPIs
             {
                 Oauth2Service.Scope.UserinfoEmail,
                 AdsenseService.Scope.AdsenseReadonly,
-                CalendarService.Scope.Calendar,
+                CalendarService.Scope.CalendarReadonly,
+                GmailService.Scope.GmailReadonly
             };
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(30 * 1000);

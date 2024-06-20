@@ -80,6 +80,9 @@
     <Reference Include="Google.Apis.Core, Version=1.68.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.68.0\lib\net462\Google.Apis.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.Gmail.v1, Version=1.68.0.3427, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Gmail.v1.1.68.0.3427\lib\net462\Google.Apis.Gmail.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.Oauth2.v2, Version=1.68.0.1869, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Oauth2.v2.1.68.0.1869\lib\net462\Google.Apis.Oauth2.v2.dll</HintPath>
     </Reference>
@@ -123,6 +126,11 @@
     <Compile Include="GoogleAPIs\AdSenseManagement\Models\Item.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\PluginAction.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\Enums\Resources.cs" />
+    <Compile Include="GoogleAPIs\Gmail\ApiService.cs" />
+    <Compile Include="GoogleAPIs\Gmail\DataBinder.cs" />
+    <Compile Include="GoogleAPIs\Gmail\Models\Item.cs" />
+    <Compile Include="GoogleAPIs\Gmail\Models\PluginSettings.cs" />
+    <Compile Include="GoogleAPIs\Gmail\PluginAction.cs" />
     <Compile Include="GoogleAPIs\GoogleAuth.cs" />
     <Compile Include="GoogleAPIs\GoogleCalendar\DataBinder.cs" />
     <Compile Include="GoogleAPIs\GoogleCalendar\ApiService.cs" />
@@ -146,7 +154,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GoogleAPIs\Gmail\" />
+    <Folder Include="GoogleAPIs\Oauth2\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DevAny.ico" />
+    <None Include="Resources\gmail.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8.1">
