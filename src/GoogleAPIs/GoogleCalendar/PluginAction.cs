@@ -238,7 +238,8 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <returns></returns>
         private bool CheckExistData()
         {
-            return item.Events.Any();
+            if (item.Events is null) return false;
+            return item.Events.Items.Any();
         }
 
         /// <summary>
@@ -306,6 +307,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             try
             {
                 item = await GetApiInstance().ExecuteAsync();
+                await Connection.SetTitleAsync(UpdateKeyTitle(item));
                 Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
                 await Connection.SetImageAsync(UpdateKeyImage(item));
             }
@@ -357,6 +359,10 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
                 Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
             return bmp;
+        }
+        private string UpdateKeyTitle(Item item)
+        {
+            return item.Events?.Summary;
         }
         /// <summary>
         /// Google API 쿼리 클래스의 인스턴스를 가져옵니다.

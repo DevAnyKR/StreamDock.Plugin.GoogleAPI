@@ -60,7 +60,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// 오늘 이벤트를 가져옵니다.
         /// </summary>
         /// <returns></returns>
-        internal async Task<IList<Event>> CalendarEventsToday(string id)
+        internal async Task<Events> CalendarEventsToday(string id)
         {
             var requeust = service.Events.List(id);
 
@@ -70,7 +70,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 
             var result = await requeust.ExecuteAsync();
 
-            return result.Items;
+            return result;
         }
     }
 }

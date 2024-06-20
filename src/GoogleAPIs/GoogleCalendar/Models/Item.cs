@@ -19,7 +19,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         // 개별 데이터
         internal CalendarsResource Calendar { get; set; }
         internal string calendarID { get; set; }
-        internal IList<Event> Events { get; set; } = new List<Event>();
+        internal Events Events { get; set; }
         internal bool CalendarExists => !Calendars.IsNullOrEmpty() && Calendars.Any();
 
         internal IList<string> DisplayValues { get; set; } = new List<string>();
@@ -28,7 +28,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             Calendars?.Clear();
             calendarID = string.Empty;
-            Events?.Clear();
+            Events = null;
             DisplayValues?.Clear();
         }
     }
