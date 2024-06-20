@@ -24,6 +24,10 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         public string PiBackColor { get; set; }
         public Color BackColor => GraphicsTools.ColorFromHex(PiBackColor);
 
+        [JsonProperty(PropertyName = "circleColor")]
+        public string PiCircleColor { get; set; }
+        public Color CircleColor => GraphicsTools.ColorFromHex(PiCircleColor);
+
         [JsonProperty(PropertyName = "userTokenName")]
         public string PiUserTokenName { get; set; }
         public string UserTokenName => PiUserTokenName;
