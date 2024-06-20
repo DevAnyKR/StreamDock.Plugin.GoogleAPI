@@ -28,31 +28,24 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// </summary>
         internal async Task<Item> ExecuteAsync()
         {
-            try
+            // 구글 API 통신 인스턴스
+            ApiService apiSevice = new ApiService(googleAuth.userCredential, new CalendarService(await googleAuth.GetServiceInitializerAsync(pluginSettings.UserTokenName)));
+
+            if (pluginSettings.CalendarSummary.IsNullOrEmpty())
             {
-                // 구글 API 통신 인스턴스
-                ApiService apiSevice = new ApiService(googleAuth.userCredential, new CalendarService(await googleAuth.GetServiceInitializerAsync(pluginSettings.UserTokenName)));
-
-                if (pluginSettings.CalendarSummary.IsNullOrEmpty())
-                {
-                    item.calendarID = apiSevice.GetPrimaryCalendar().Id;
-                }
-                else
-                {
-                    item.calendarID = apiSevice.GetCalendar(pluginSettings.CalendarSummary).Id;
-                }
-
-                // StreamDock 설정에 따른 동작 호출
-                item.Events = await apiSevice.CalendarEventsToday(item.calendarID);
-
-                // 디스플레이용 데이터 가공
-                item = SetDisplayValue();
+                item.calendarID = apiSevice.GetPrimaryCalendar().Id;
             }
-            catch (Exception ex)
+            else
             {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
+                item.calendarID = apiSevice.GetCalendar(pluginSettings.CalendarSummary).Id;
             }
+
+            // StreamDock 설정에 따른 동작 호출
+            item.Events = await apiSevice.CalendarEventsToday(item.calendarID);
+
+            // 디스플레이용 데이터 가공
+            item = SetDisplayValue();
+
             return item;
         }
 
@@ -62,23 +55,15 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <returns></returns>
         internal Item SetDisplayValue()
         {
-            try
-            {
-                item.DisplayValues.Clear();
+            item.DisplayValues.Clear();
 
-                foreach (var value in item.Events)
+            foreach (var value in item.Events.Items)
+            {
+                if (value.End.Date.IsDateTime())
                 {
-                    if (value.End.Date.IsDateTime())
-                    {
-
-                    }
-                    item.DisplayValues.Add(value.Summary);
+                    //TODO 종일 또는 종료시각 설정에 따라 처리
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
+                item.DisplayValues.Add(value.Summary);
             }
 
             return item;

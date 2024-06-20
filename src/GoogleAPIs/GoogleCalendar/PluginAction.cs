@@ -46,25 +46,24 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="e"></param>
         private async void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
-            //Tools.AutoPopulateSettings(pluginSettings, e.Event.Payload.Settings);
-
-            if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+            try
             {
-                await DisplayInitialAsync();
+                Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
+                if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+                {
+                    await DisplayInitialAsync();
+                }
+                else
+                {
+                    await DisplayBusyAsync();
+                    await UpdateApiDataAsync();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await DisplayBusyAsync();
-                await UpdateApiDataAsync();
-                //if (!CheckExistData())
-                //{
-                //    await DisplayInitialAsync();
-                //}
-                //else
-                //{
-                //    await DisplayPreValueAsync();
-                //}
+                await Connection.ShowAlert();
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
         }
 
@@ -168,16 +167,24 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="payload"></param>
         public async override void KeyReleased(KeyPayload payload)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "KeyReleased called");
-
-            if (GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName) && CheckExistData())
+            try
             {
-                await Connection.OpenUrlAsync(item.Events.Items.First().HtmlLink);
+                Logger.Instance.LogMessage(TracingLevel.INFO, "KeyReleased called");
+                if (GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName) && CheckExistData())
+                {
+                    await Connection.OpenUrlAsync(item.Events.Items.First().HtmlLink);
+                }
+                else
+                {
+                    await DisplayBusyAsync();
+                    await UpdateApiDataAsync();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await DisplayBusyAsync();
-                await UpdateApiDataAsync();
+                await Connection.ShowAlert();
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
         }
 
@@ -194,25 +201,33 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="payload"></param>
         public async override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedSettings called");
+            try
+            {
+                Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedSettings called");
+                Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
+                await SaveSettingsAsync();
 
-            Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
-            await SaveSettingsAsync();
-
-            if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
-            {
-                item.Init();
-                dataBinder = null;
-                await DisplayInitialAsync();
+                if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+                {
+                    item.Init();
+                    dataBinder = null;
+                    await DisplayInitialAsync();
+                }
+                else if (CheckExistData())
+                {
+                    await DisplayBusyAsync();
+                    await UpdateApiDataAsync();
+                }
+                else
+                {
+                    await DisplayInitialAsync();
+                }
             }
-            else if (CheckExistData())
+            catch (Exception ex)
             {
-                await DisplayBusyAsync();
-                await UpdateApiDataAsync();
-            }
-            else
-            {
-                await DisplayInitialAsync();
+                await Connection.ShowAlert();
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
         }
 
@@ -247,16 +262,8 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// </summary>
         private async Task DisplayInitialAsync()
         {
-            try
-            {
-                item.DisplayValues.OnlyOne("Press Key...");
-                await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
-            }
+            item.DisplayValues.OnlyOne("Press Key...");
+            await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
         }
         private async Task DisplayPreValueAsync()
         {
@@ -279,24 +286,16 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// </summary>
         private async Task DisplayBusyAsync()
         {
-            try
+            TitleParameters tp = new TitleParameters(new FontFamily("Arial"), FontStyle.Bold, 12, Color.White, true, TitleVerticalAlignment.Middle);
+            using (Bitmap image = Tools.GenerateGenericKeyImage(out Graphics graphics))
             {
-                TitleParameters tp = new TitleParameters(new FontFamily("Arial"), FontStyle.Bold, 12, Color.White, true, TitleVerticalAlignment.Middle);
-                using (Bitmap image = Tools.GenerateGenericKeyImage(out Graphics graphics))
-                {
-                    graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
-                    graphics.AddTextPath(tp, image.Height, image.Width, "Loading...", Color.Black, 7); //TODO 지역화
+                graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
+                graphics.AddTextPath(tp, image.Height, image.Width, "Loading...", Color.Black, 7); //TODO 지역화
 #if DEBUG
                     Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayBusyAsync: 스트림독으로 이미지 전송 중...");
 #endif
-                    await Connection.SetImageAsync(image);
-                    graphics.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
+                await Connection.SetImageAsync(image);
+                graphics.Dispose();
             }
         }
         /// <summary>
@@ -304,18 +303,10 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// </summary>
         private async Task UpdateApiDataAsync()
         {
-            try
-            {
-                item = await GetApiInstance().ExecuteAsync();
-                await Connection.SetTitleAsync(UpdateKeyTitle(item));
-                Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
-                await Connection.SetImageAsync(UpdateKeyImage(item));
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
-            }
+            item = await GetApiInstance().ExecuteAsync();
+            await Connection.SetTitleAsync(UpdateKeyTitle(item));
+            Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
+            await Connection.SetImageAsync(UpdateKeyImage(item));
         }
         /// <summary>
         /// PI 설정에 따라 이미 수신된 Google API 데이터로 갱신합니다.
@@ -330,34 +321,27 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         private Bitmap UpdateKeyImage(Item item, bool autoSize = false)
         {
             Bitmap bmp = null;
-            try
-            {
-                bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
+            bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
 
-                for (int i = 0; i < item.DisplayValues.Count; i++)
+            for (int i = 0; i < item.DisplayValues.Count; i++)
+            {
+                var font = new Font("Arial", 32, FontStyle.Bold, GraphicsUnit.Pixel);
+                var stringFormat = new StringFormat
                 {
-                    var font = new Font("Arial", 32, FontStyle.Bold, GraphicsUnit.Pixel);
-                    var stringFormat = new StringFormat
-                    {
-                        Alignment = StringAlignment.Near,
-                        LineAlignment = StringAlignment.Center
-                    };
-                    var isRGB = stringFormat.Alignment == StringAlignment.Near;
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center
+                };
+                var isRGB = stringFormat.Alignment == StringAlignment.Near;
 
-                    using (var graphics = Graphics.FromImage(bmp))
-                    {
-                        font = autoSize ? ImageHelper.ResizeFont(graphics, item.DisplayValues[i], font) : font;
-                        graphics.DrawString(item.DisplayValues[i], font, new SolidBrush(pluginSettings.FrontColor), !isRGB ? 72 : 5, (144 / (item.DisplayValues.Count + 1)) * (i + 1), stringFormat);
-                    }
-
-                    //bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i], new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
+                using (var graphics = Graphics.FromImage(bmp))
+                {
+                    font = autoSize ? ImageHelper.ResizeFont(graphics, item.DisplayValues[i], font) : font;
+                    graphics.DrawString(item.DisplayValues[i], font, new SolidBrush(pluginSettings.FrontColor), !isRGB ? 72 : 5, (144 / (item.DisplayValues.Count + 1)) * (i + 1), stringFormat);
                 }
+
+                //bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i], new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
             }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
-            }
+
             return bmp;
         }
         private string UpdateKeyTitle(Item item)
