@@ -262,7 +262,6 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         /// </summary>
         private async Task DisplayInitialAsync()
         {
-            item.DisplayValues.OnlyOne("Press Key...");
             await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
         }
         private async Task DisplayPreValueAsync()
@@ -349,7 +348,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
                 var fontSize = graphics.MeasureString(item.DisplayValues[0], font);
                 float fontMaxSize = fontSize.Width > fontSize.Height ? fontSize.Width : fontSize.Height;
                 int padding = 5;
-                graphics.FillEllipse(new SolidBrush(Color.FromArgb(128, Color.Red)), 110 - fontMaxSize / 2 - padding, 50 - fontMaxSize / 2 - padding, fontMaxSize + padding * 2, fontMaxSize + padding * 2);
+                graphics.FillEllipse(new SolidBrush(Color.FromArgb(128, pluginSettings.CircleColor)), 110 - fontMaxSize / 2 - padding, 50 - fontMaxSize / 2 - padding, fontMaxSize + padding * 2, fontMaxSize + padding * 2);
 
                 graphics.DrawString(item.DisplayValues[0], font, new SolidBrush(pluginSettings.FrontColor), 110, 50, stringFormat);
             }

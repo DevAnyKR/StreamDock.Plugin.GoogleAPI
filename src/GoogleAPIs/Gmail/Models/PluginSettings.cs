@@ -38,6 +38,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             instance.PiViewType = String.Empty;
             instance.PiFrontColor = "#FFFFFF";
             instance.PiBackColor = String.Empty;
+            instance.PiCircleColor = "#FF0000";
             instance.PiUserTokenName = "user";
             return instance;
         }
