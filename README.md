@@ -38,12 +38,13 @@
  
 ## Working APIs
 
-- AdSense Management (2024-06-07~)
-- Calendar
+1. AdSense Management
+2. Calendar
+3. GMail
 
 ## Todo APIs
 
-- GMail
+- 
 
 ## Language
 - C#.Net Framework 4.8.x
