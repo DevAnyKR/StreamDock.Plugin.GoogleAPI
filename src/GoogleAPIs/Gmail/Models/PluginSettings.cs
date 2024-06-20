@@ -32,6 +32,10 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         public string PiUserTokenName { get; set; }
         public string UserTokenName => PiUserTokenName;
 
+        [JsonProperty(PropertyName = "refreshIntervalMin")]
+        public string PiRefreshIntervalMin { get; set; }
+        public TimeSpan RefreshIntervalMin => TimeSpan.FromMinutes(PiRefreshIntervalMin.DefaultIfEmpty("0").ToDouble());
+
         public static PluginSettings CreateDefaultSettings()
         {
             PluginSettings instance = new PluginSettings();
@@ -40,6 +44,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             instance.PiBackColor = String.Empty;
             instance.PiCircleColor = "#FF0000";
             instance.PiUserTokenName = "user";
+            instance.PiRefreshIntervalMin = String.Empty;
             return instance;
         }
 

@@ -22,6 +22,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         Item item;
         PluginSettings pluginSettings;
         DataBinder dataBinder;
+        DateTime LatestRefreshTime;
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
@@ -192,8 +193,17 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         /// <summary>
         /// 매 초 호출되는 메서드입니다.
         /// </summary>
-        public override void OnTick()
+        public async override void OnTick()
         {
+            if (IsRefreshable(pluginSettings.RefreshIntervalMin))
+            {
+                Logger.Instance.LogMessage(TracingLevel.INFO, "Refresh...");
+                if (GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+                {
+                    await DisplayBusyAsync();
+                    await UpdateApiDataAsync();
+                }
+            }
         }
 
         /// <summary>
@@ -306,6 +316,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             await Connection.SetTitleAsync(UpdateKeyTitle(item));
             Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
             await Connection.SetImageAsync(UpdateKeyImage(item));
+            LatestRefreshTime = DateTime.Now;
         }
         /// <summary>
         /// PI 설정에 따라 이미 수신된 Google API 데이터로 갱신합니다.
@@ -366,6 +377,19 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         private DataBinder GetApiInstance()
         {
             return dataBinder ?? new DataBinder(pluginSettings, item);
+        }
+
+        private bool IsRefreshable(TimeSpan timespan)
+        {
+            if (timespan.TotalSeconds > 0 && DateTime.Now.Subtract(LatestRefreshTime).CompareTo(timespan) >= 0)
+            {
+                LatestRefreshTime = DateTime.Now;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
     }
