@@ -172,7 +172,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 
             if (GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName) && CheckExistData())
             {
-                System.Diagnostics.Process.Start(item.Events.First().HtmlLink);
+                await Connection.OpenUrlAsync(item.Events.Items.First().HtmlLink);
             }
             else
             {
