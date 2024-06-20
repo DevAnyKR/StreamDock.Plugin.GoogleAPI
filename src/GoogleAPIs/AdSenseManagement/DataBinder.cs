@@ -84,13 +84,10 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                         item.DisplayValues.OnlyOne(Item.Payments.First().Amount);
                         break;
                     case Resources.Reports:
-                        item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics)].Rows.First().Cells.First().Value);
+                        item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics)]?.Rows.First().Cells.First().Value);
                         break;
                     case Resources.Dimensions:
-                        item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions)].Totals.Cells[1].Value);
-                        break;
-                    default:
-                        item.DisplayValues.OnlyOne("옵션 없음");
+                        item.DisplayValues.OnlyOne(Item.ReportResults[ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions)]?.Totals.Cells[1].Value);
                         break;
                 }
 #if DEBUG

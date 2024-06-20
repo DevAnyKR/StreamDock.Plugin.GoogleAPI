@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -342,13 +343,13 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                     case Resources.Reports:
                         for (int i = 0; i < item.DisplayValues.Count; i++)
                         {
-                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i], new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
+                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i].DefaultIfEmpty("No Data!"), new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
                         }
                         break;
                     case Resources.Dimensions:
                         if (initial)
                         {
-                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[0], new SolidBrush(pluginSettings.FrontColor), 72, 72));
+                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[0].DefaultIfEmpty("No Data!"), new SolidBrush(pluginSettings.FrontColor), 72, 72));
                         }
                         else
                         {
