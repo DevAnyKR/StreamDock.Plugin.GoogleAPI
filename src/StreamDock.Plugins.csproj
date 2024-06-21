@@ -140,6 +140,8 @@
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\ApiService.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\DataBinder.cs" />
+    <Compile Include="Model\PluginService.cs" />
+    <Compile Include="Model\DefaultPluginSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GoogleAPIs\AdSenseManagement\Models\PluginSettings.cs" />
@@ -151,11 +153,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Diagrams\AdSenseManagement.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Base\" />
     <Folder Include="GoogleAPIs\Oauth2\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

@@ -100,7 +100,7 @@ namespace StreamDock.Plugins.GoogleAPIs
             }
             return init;
         }
-        internal static bool CredentialIsExist(string user)
+        internal static bool CredentialExist(string user)
         {
             //TODO 구글 메서드로 유효성 점검
             //! UserCredential 인증 과정 보류 시 프로세스가 멈추므로 토큰 파일 직접 확인

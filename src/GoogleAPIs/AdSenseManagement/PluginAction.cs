@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms.DataVisualization.Charting;
 
 using BarRaider.SdTools;
 using BarRaider.SdTools.Wrappers;
@@ -19,14 +15,13 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
     [PluginActionId("kr.devany.googleapi.adsensemanagement")]
     public class PluginAction : KeypadBase
     {
-        Item item;
-        PluginSettings pluginSettings;
+        PluginService pluginService;
         DataBinder dataBinder;
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
-            pluginSettings = (payload.Settings == null || payload.Settings.Count == 0) ? PluginSettings.CreateDefaultSettings() : payload.Settings.ToObject<PluginSettings>();
-            item = new();
+            pluginService = new();
+            dataBinder = new((payload.Settings == null || payload.Settings.Count == 0) ? PluginSettings.CreateDefaultSettings() : payload.Settings.ToObject<PluginSettings>());
 
             Connection.OnApplicationDidLaunch += Connection_OnApplicationDidLaunch;
             Connection.OnApplicationDidTerminate += Connection_OnApplicationDidTerminate;
@@ -36,7 +31,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             Connection.OnPropertyInspectorDidDisappear += Connection_OnPropertyInspectorDidDisappear;
             Connection.OnSendToPlugin += Connection_OnSendToPlugin;
             Connection.OnTitleParametersDidChange += Connection_OnTitleParametersDidChange;
-            pluginSettings.PropertyChanged += PropertyChanged;
+            dataBinder.pluginSettings.PropertyChanged += PropertyChanged;
         }
         #region Event
         /// <summary>
@@ -47,17 +42,27 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <param name="e"></param>
         private async void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
-
-            if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+            try
             {
-                await DisplayInitialAsync();
+                Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
+                if (!pluginService.HasExecuteOnce)
+                {
+                    if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
+                    {
+                        await DisplayInitialAsync();
+                    }
+                    else
+                    {
+                        await DisplayBusyAsync();
+                        await UpdateApiDataAsync();
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                //TODO 자동 갱신 or 수동 갱신
-                await DisplayBusyAsync();
-                await UpdateApiDataAsync();
+                await Connection.ShowAlert();
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
         }
 
@@ -162,17 +167,33 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <param name="payload"></param>
         public async override void KeyReleased(KeyPayload payload)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "KeyReleased called");
-
-            await DisplayBusyAsync();
-            await UpdateApiDataAsync();
+            try
+            {
+                Logger.Instance.LogMessage(TracingLevel.INFO, "KeyReleased called");
+                await DisplayBusyAsync();
+                await UpdateApiDataAsync();
+            }
+            catch (Exception ex)
+            {
+                await Connection.ShowAlert();
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
+            }
         }
 
         /// <summary>
         /// 매 초 호출되는 메서드입니다.
         /// </summary>
-        public override void OnTick()
+        public async override void OnTick()
         {
+            if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
+            {
+                Logger.Instance.LogMessage(TracingLevel.INFO, "Refresh...");
+                if (GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
+                {
+                    await UpdateApiDataAsync();
+                }
+            }
         }
 
         /// <summary>
@@ -183,16 +204,16 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedSettings called");
 
-            Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
+            Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
             await SaveSettingsAsync(); // 스트림독으로 설정 업로드
 
-            if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+            if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
             {
-                item.Init();
+                dataBinder.item.Init();
                 dataBinder = null;
                 await DisplayInitialAsync();
             }
-            else if (CheckExistData())
+            else if (dataBinder.CheckExistData())
             {
                 await DisplayBusyAsync();
                 await UpdateApiDataAsync();
@@ -206,7 +227,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedGlobalSettings called");
-            Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
+            Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
         }
         #endregion
         #region Private Methods
@@ -216,82 +237,33 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <returns></returns>
         private async Task SaveSettingsAsync()
         {
-            await Connection.SetSettingsAsync(JObject.FromObject(pluginSettings));
+            await Connection.SetSettingsAsync(JObject.FromObject(dataBinder.pluginSettings));
         }
-
-        /// <summary>
-        /// 기존 데이터가 있는지 검사합니다.
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckExistData()
-        {
-            return pluginSettings.Resource switch
-            {
-                Resources.Payments => item.PaymentExists,
-                Resources.Reports => item.ReportExists && Item.ReportResults.ContainsKey(ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics)),
-                Resources.Dimensions => item.ReportExists && Item.ReportResults.ContainsKey(ReportKey.Create(pluginSettings.DateRange, pluginSettings.Metrics, pluginSettings.Dimensions)),
-                _ => false
-            };
-        }
-
         /// <summary>
         /// 초기 이미지를 표시합니다.
         /// </summary>
         private async Task DisplayInitialAsync()
         {
-            try
-            {
-                item.DisplayValues.OnlyOne("Press Key...");
-#if DEBUG
-                Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
-#endif
-                await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
-            }
+            dataBinder.SetInitialValue();
+            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage(true)); // 초기 이미지 출력
         }
         private async Task DisplayPreValueAsync()
         {
-            try
-            {
-                UpdateValues();
-#if DEBUG
-                Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
-#endif
-                await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
-            }
+            UpdateValues();
+            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage(true)); // 초기 이미지 출력
         }
         /// <summary>
         /// 작업 중임을 알리는 이미지를 표시합니다.
         /// </summary>
         private async Task DisplayBusyAsync()
         {
-            try
+            TitleParameters tp = new TitleParameters(new FontFamily("Arial"), FontStyle.Bold, 12, Color.White, true, TitleVerticalAlignment.Middle);
+            using (Image image = Tools.GenerateGenericKeyImage(out Graphics graphics))
             {
-                TitleParameters tp = new TitleParameters(new FontFamily("Arial"), FontStyle.Bold, 12, Color.White, true, TitleVerticalAlignment.Middle);
-                using (Image image = Tools.GenerateGenericKeyImage(out Graphics graphics))
-                {
-                    graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
-                    graphics.AddTextPath(tp, image.Height, image.Width, "Loading...", Color.Black, 7); //TODO 지역화
-                    graphics.Dispose();
-#if DEBUG
-                    Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayBusyAsync: 스트림독으로 이미지 전송 중...");
-#endif
-                    await Connection.SetImageAsync(image);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
+                graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
+                graphics.AddTextPath(tp, image.Height, image.Width, "Loading...", Color.Black, 7); //TODO 지역화
+                graphics.Dispose();
+                await Connection.SetImageAsync(image);
             }
         }
         /// <summary>
@@ -299,79 +271,18 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// </summary>
         private async Task UpdateApiDataAsync()
         {
-            try
-            {
-                item = await GetApiInstance().ExecuteAsync();
-                Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
-                await Connection.SetImageAsync(UpdateKeyImage(item));
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
-            }
+            await dataBinder.ServiceExecuteAsync();
+            Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
+            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage());
+            pluginService.SetFirstRun();
+            pluginService.UpdateRefreshTime();
         }
         /// <summary>
         /// PI 설정에 따라 이미 수신된 Google API 데이터로 갱신합니다.
         /// </summary>
         private void UpdateValues()
         {
-            GetApiInstance().SetDisplayValue();
-        }
-        /// <summary>
-        /// 키 이미지를 변경합니다. 출력할 정보를 이미지로 변환합니다.
-        /// </summary>
-        private Bitmap UpdateKeyImage(Item item, bool initial = false)
-        {
-            Bitmap bmp = null;
-            try
-            {
-                bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
-
-                switch (pluginSettings.Resource)
-                {
-                    case Resources.Payments:
-                    case Resources.Reports:
-                        for (int i = 0; i < item.DisplayValues.Count; i++)
-                        {
-                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[i].DefaultIfEmpty("No Data!"), new SolidBrush(pluginSettings.FrontColor), 72, (144 / (item.DisplayValues.Count + 1)) * (i + 1)));
-                        }
-                        break;
-                    case Resources.Dimensions:
-                        if (initial)
-                        {
-                            bmp = new Bitmap(ImageHelper.SetImageText(bmp, item.DisplayValues[0].DefaultIfEmpty("No Data!"), new SolidBrush(pluginSettings.FrontColor), 72, 72));
-                        }
-                        else
-                        {
-                            using (MemoryStream ms = new MemoryStream())
-                            {
-                                new ChartReport(pluginSettings).CreateChart()?.SaveImage(ms, ChartImageFormat.Bmp);
-
-                                ms.Position = 0;
-                                using (var bitmap = new Bitmap(ms))
-                                {
-                                    bmp = new Bitmap(bitmap);
-                                }
-                            }
-                        }
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
-            }
-            return bmp;
-        }
-        /// <summary>
-        /// Google API 쿼리 클래스의 인스턴스를 가져옵니다.
-        /// </summary>
-        /// <returns></returns>
-        private DataBinder GetApiInstance()
-        {
-            return dataBinder ?? new DataBinder(pluginSettings, item);
+            dataBinder.SetDisplayValue();
         }
         #endregion
     }

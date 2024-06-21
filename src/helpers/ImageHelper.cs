@@ -27,6 +27,16 @@ namespace StreamDock.Plugins
 
             return font;
         }
+        internal static Font ResizeFont(Graphics graphics, string text, Font font, int maxWidth, int maxHeight)
+        {
+            var newSize = graphics.MeasureString(text, font);
+            if (newSize.Width > maxWidth || newSize.Height > maxHeight)
+            {
+                return ResizeFont(graphics, text, new Font("Arial", font.Size - 2, FontStyle.Bold, GraphicsUnit.Pixel));
+            }
+
+            return font;
+        }
 
         internal static Image SetImageText(Image image, string text, Brush brush)
         {

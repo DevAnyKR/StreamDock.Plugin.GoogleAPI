@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -76,20 +77,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             IList<Payment> payments = null;
 
-            if (adSenseAccount != null)
+            if (!Item.AccountName.IsNullOrEmpty())
             {
-                payments = service.Accounts.Payments.List(adSenseAccount.Name).Execute().Payments;
-            }
-
-            return payments;
-        }
-        internal async Task<IList<Payment>> RunCallPaymentAsync()
-        {
-            IList<Payment> payments = null;
-
-            if (adSenseAccount != null)
-            {
-                var dataAsync = await service.Accounts.Payments.List(adSenseAccount.Name).ExecuteAsync();
+                var dataAsync = service.Accounts.Payments.List(Item.AccountName).Execute();
                 payments = dataAsync.Payments;
             }
 
@@ -106,35 +96,14 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             ReportResult reportResult = null;
 
-            if (adSenseAccount != null)
+            if (!Item.AccountName.IsNullOrEmpty())
             {
-                var report = service.Accounts.Reports.Generate(adSenseAccount.Name);
+                var report = service.Accounts.Reports.Generate(Item.AccountName);
 
                 report.DateRange = dateRangeEnum;
                 report.Metrics = metricsEnum;
 
                 var result = report.Execute();
-
-                if (result.TotalMatchedRows > 0)
-                {
-                    reportResult = result;
-                }
-            }
-
-            return reportResult;
-        }
-        internal async Task<ReportResult> RunCallReportAsync(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum)
-        {
-            ReportResult reportResult = null;
-
-            if (adSenseAccount != null)
-            {
-                var report = service.Accounts.Reports.Generate(adSenseAccount.Name);
-
-                report.DateRange = dateRangeEnum;
-                report.Metrics = metricsEnum;
-
-                var result = await report.ExecuteAsync();
 
                 if (result.TotalMatchedRows > 0)
                 {
@@ -155,37 +124,15 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         {
             ReportResult reportResult = null;
 
-            if (adSenseAccount != null)
+            if (!Item.AccountName.IsNullOrEmpty())
             {
-                var report = service.Accounts.Reports.Generate(adSenseAccount.Name);
+                var report = service.Accounts.Reports.Generate(Item.AccountName);
 
                 report.DateRange = dateRangeEnum;
                 report.Metrics = metricsEnum;
                 report.Dimensions = dimensionsEnum;
 
                 var result = report.Execute();
-
-                if (result.TotalMatchedRows > 0)
-                {
-                    reportResult = result;
-                }
-            }
-
-            return reportResult;
-        }
-        internal async Task<ReportResult> RunCallReportAsync(DateRangeEnum dateRangeEnum, MetricsEnum metricsEnum, DimensionsEnum dimensionsEnum)
-        {
-            ReportResult reportResult = null;
-
-            if (adSenseAccount != null)
-            {
-                var report = service.Accounts.Reports.Generate(adSenseAccount.Name);
-
-                report.DateRange = dateRangeEnum;
-                report.Metrics = metricsEnum;
-                report.Dimensions = dimensionsEnum;
-
-                var result = await report.ExecuteAsync();
 
                 if (result.TotalMatchedRows > 0)
                 {

@@ -67,10 +67,9 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             ChartArea chartArea1;
             Series series1;
 
-            Image image = Tools.GenerateGenericKeyImage(out Graphics _);
             chart.Margin = new System.Windows.Forms.Padding(0);
             chart.Padding = new System.Windows.Forms.Padding(0);
-            chart.Size = new Size(image.Width, image.Height);
+            chart.Size = new Size(144, 144); //TODO to variables
             chart.BackColor = Color.Black;
             chart.ForeColor = Color.White;
             chart.BorderColor = Color.White;

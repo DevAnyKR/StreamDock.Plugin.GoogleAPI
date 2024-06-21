@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAPI", "src\GoogleAPI.csproj", "{6C1C9C32-D82A-4897-8132-1B7A9716928C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamDock.Plugins", "src\StreamDock.Plugins.csproj", "{6C1C9C32-D82A-4897-8132-1B7A9716928C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루션 항목", "{E21368CE-5FF2-4154-B5D5-0929278A2CCE}"
 	ProjectSection(SolutionItems) = preProject

@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.ApiService" Collapsed="true">
+    <Position X="12" Y="4" Width="1.5" />
+    <Members>
+      <Field Name="adSenseAccount" Hidden="true" />
+      <Method Name="GetAccountName" Hidden="true" />
+      <Method Name="GetAllAccounts" Hidden="true" />
+      <Field Name="maxListPageSize" Hidden="true" />
+      <Method Name="RunCallPayment" Hidden="true" />
+      <Method Name="RunCallReport" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAEAAEBAAAAAAAAEAAAAAAAAAAIAAAABAEAAAAAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\ApiService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.ChartReport" Collapsed="true">
+    <Position X="14.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAQAAAAAAEAAAACAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\ChartReport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.DataBinder">
+    <Position X="11.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAIACAABAAAACAwAAAAAIAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\DataBinder.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="googleAuth" />
+      <Property Name="item" />
+      <Property Name="pluginSettings" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.Item" Collapsed="true">
+    <Position X="11.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACCAAAAAAgBAAAQAAAAAAAAAAAAAAACABAQCAFAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\Models\Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.PluginSettings" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="9.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAIIACAiCAAgAAAAMgAAAABAAAAAQAAAAAEAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\Models\PluginSettings.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.ReportKey" Collapsed="true">
+    <Position X="16.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\Models\ReportKey.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.PluginAction">
+    <Position X="8.75" Y="2" Width="2" />
+    <Members>
+      <Method Name="Connection_OnApplicationDidLaunch" Hidden="true" />
+      <Method Name="Connection_OnApplicationDidTerminate" Hidden="true" />
+      <Method Name="Connection_OnDeviceDidConnect" Hidden="true" />
+      <Method Name="Connection_OnDeviceDidDisconnect" Hidden="true" />
+      <Method Name="Connection_OnPropertyInspectorDidAppear" Hidden="true" />
+      <Method Name="Connection_OnPropertyInspectorDidDisappear" Hidden="true" />
+      <Method Name="Connection_OnSendToPlugin" Hidden="true" />
+      <Method Name="Connection_OnTitleParametersDidChange" Hidden="true" />
+      <Method Name="KeyPressed" Hidden="true" />
+      <Method Name="KeyReleased" Hidden="true" />
+      <Method Name="OnTick" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAgASCAACIAAAAACIQAEhAgACCAAwQAAABBAIIA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\PluginAction.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="dataBinder" />
+      <Field Name="pluginService" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="StreamDock.Plugins.GoogleAPIs.GoogleAuth">
+    <Position X="11.75" Y="0.75" Width="2" />
+    <Members>
+      <Field Name="semaphoreSlim" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAACAAAAAAAQAAgACAAAAABAAIAAAAA=</HashCode>
+      <FileName>GoogleAPIs\GoogleAuth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamDock.Plugins.PluginService" Collapsed="true">
+    <Position X="6" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gCAAAAAAAAAAAAAAAAAAABAAAAAAACAAEAAAAAAAAAA=</HashCode>
+      <FileName>Model\PluginService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BarRaider.SdTools.KeypadBase" Collapsed="true">
+    <Position X="9" Y="0.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="StreamDock.Plugins.DefaultPluginSettings">
+    <Position X="9" Y="5.75" Width="1.5" />
+    <Members>
+      <Method Name="OnPropertyChanged" Hidden="true" />
+      <Event Name="PropertyChanged" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AQAAQIAAEAAgAAIAIABAAAAAhAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Model\DefaultPluginSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.ReportKey&lt;T1, T2&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAIAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\Models\ReportKey.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.188" Collapsed="true" />
+  </Struct>
+  <Struct Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.ReportKey&lt;T1, T2, T3&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\Models\ReportKey.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Interface Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.IReportKey" Collapsed="true">
+    <Position X="14.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\Models\ReportKey.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.Resources" Collapsed="true">
+    <Position X="14.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAABAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\Enums\Resources.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="StreamDock.Plugins.GoogleAPIs.AdSenseManagement.ValueTypes" Collapsed="true">
+    <Position X="16.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GoogleAPIs\AdSenseManagement\Enums\ValueTypes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

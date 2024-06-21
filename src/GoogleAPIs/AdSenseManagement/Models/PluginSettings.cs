@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Drawing;
-
-using BarRaider.SdTools;
+using System.ComponentModel;
 
 using Newtonsoft.Json;
 
 using DateRangeEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.DateRangeEnum;
-using MetricsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.MetricsEnum;
 using DimensionsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.DimensionsEnum;
-using System.ComponentModel;
+using MetricsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest.MetricsEnum;
 
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
-    public class PluginSettings : INotifyPropertyChanged
+    public class PluginSettings : DefaultPluginSettings, INotifyPropertyChanged
     {
         //? Json 속성 이름과 CS 속성 이름이 중복되면 안 됨. 대소문자 구분.
         [JsonProperty(PropertyName = "resource")]
@@ -84,42 +81,18 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             }
         }
 
-        [JsonProperty(PropertyName = "frontColor")]
-        public string PiFrontColor { get; set; }
-        public Color FrontColor => GraphicsTools.ColorFromHex(PiFrontColor);
-
-        [JsonProperty(PropertyName = "backColor")]
-        public string PiBackColor { get; set; }
-        public Color BackColor => GraphicsTools.ColorFromHex(PiBackColor);
-
-        [JsonProperty(PropertyName = "userTokenName")]
-        public string PiUserTokenName { get; set; }
-        public string UserTokenName => PiUserTokenName;
-
         public ValueTypes ValueType { get; set; }
 
         public static PluginSettings CreateDefaultSettings()
         {
             PluginSettings instance = new PluginSettings();
+            instance.InitializeSettings();
             instance.PiResource = String.Empty;
             instance.PiDateRange = String.Empty;
             instance.PiMetric = String.Empty;
             instance.PiDimensions = String.Empty;
-            instance.PiFrontColor = "#FFFFFF";
-            instance.PiBackColor = String.Empty;
-            instance.PiUserTokenName = "user";
             instance.ValueType = ValueTypes.String;
             return instance;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChanged?.Invoke(this, e);
-        }
-        protected void OnPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
     }
 }

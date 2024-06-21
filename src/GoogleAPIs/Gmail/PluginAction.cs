@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
 using System.Threading.Tasks;
 
 using BarRaider.SdTools;
@@ -19,16 +16,13 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
     [PluginActionId("kr.devany.googleapi.gmail")]
     public class PluginAction : KeypadBase
     {
-        Item item;
-        PluginSettings pluginSettings;
+        PluginService pluginService;
         DataBinder dataBinder;
-        DateTime LatestRefreshTime;
-        bool firstRunFlag;
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
-            pluginSettings = (payload.Settings == null || payload.Settings.Count == 0) ? PluginSettings.CreateDefaultSettings() : payload.Settings.ToObject<PluginSettings>();
-            item = new();
+            pluginService = new();
+            dataBinder = new((payload.Settings == null || payload.Settings.Count == 0) ? PluginSettings.CreateDefaultSettings() : payload.Settings.ToObject<PluginSettings>());
 
             Connection.OnApplicationDidLaunch += Connection_OnApplicationDidLaunch;
             Connection.OnApplicationDidTerminate += Connection_OnApplicationDidTerminate;
@@ -38,7 +32,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             Connection.OnPropertyInspectorDidDisappear += Connection_OnPropertyInspectorDidDisappear;
             Connection.OnSendToPlugin += Connection_OnSendToPlugin;
             Connection.OnTitleParametersDidChange += Connection_OnTitleParametersDidChange;
-            pluginSettings.PropertyChanged += PropertyChanged;
+            dataBinder.pluginSettings.PropertyChanged += PropertyChanged;
         }
 
         /// <summary>
@@ -52,9 +46,9 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             try
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
-                if (!firstRunFlag)
+                if (!pluginService.HasExecuteOnce)
                 {
-                    if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+                    if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
                     {
                         await DisplayInitialAsync();
                     }
@@ -176,7 +170,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             try
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, "KeyReleased called");
-                if (GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName) && CheckExistData())
+                if (GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName) && dataBinder.CheckExistData())
                 {
                     await Connection.OpenUrlAsync("https://mail.google.com/");
                 }
@@ -199,12 +193,11 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         /// </summary>
         public async override void OnTick()
         {
-            if (IsRefreshable(pluginSettings.RefreshIntervalMin))
+            if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, "Refresh...");
-                if (GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+                if (dataBinder.ExistsUserCredential)
                 {
-                    await DisplayBusyAsync();
                     await UpdateApiDataAsync();
                 }
             }
@@ -219,16 +212,15 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             try
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedSettings called");
-                Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
+                Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
                 await SaveSettingsAsync();
 
-                if (!GoogleAuth.CredentialIsExist(pluginSettings.UserTokenName))
+                if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
                 {
-                    item.Init();
-                    dataBinder = null;
+                    dataBinder.item.Init();
                     await DisplayInitialAsync();
                 }
-                else if (CheckExistData())
+                else if (dataBinder.CheckExistData())
                 {
                     await DisplayBusyAsync();
                     await UpdateApiDataAsync();
@@ -249,7 +241,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedGlobalSettings called");
-            Tools.AutoPopulateSettings(pluginSettings, payload.Settings);
+            Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
         }
 
         #region Private Methods
@@ -259,34 +251,21 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         /// <returns></returns>
         private async Task SaveSettingsAsync()
         {
-            await Connection.SetSettingsAsync(JObject.FromObject(pluginSettings));
+            await Connection.SetSettingsAsync(JObject.FromObject(dataBinder.pluginSettings));
         }
-
-        /// <summary>
-        /// 기존 데이터가 있는지 검사합니다.
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckExistData()
-        {
-            return item.MessageUnReadCount > 0;
-        }
-
         /// <summary>
         /// 초기 이미지를 표시합니다.
         /// </summary>
         private async Task DisplayInitialAsync()
         {
-            await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
+            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage()); // 초기 이미지 출력
         }
         private async Task DisplayPreValueAsync()
         {
             try
             {
                 UpdateValues();
-#if DEBUG
-                Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayInitialAsync: 스트림독으로 이미지 전송 중...");
-#endif
-                await Connection.SetImageAsync(UpdateKeyImage(item, true)); // 초기 이미지 출력
+                await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage()); // 초기 이미지 출력
             }
             catch (Exception ex)
             {
@@ -304,11 +283,8 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             {
                 graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
                 graphics.AddTextPath(tp, image.Height, image.Width, "Loading...", Color.Black, 7); //TODO 지역화
-#if DEBUG
-                    Logger.Instance.LogMessage(TracingLevel.INFO, "DisplayBusyAsync: 스트림독으로 이미지 전송 중...");
-#endif
-                await Connection.SetImageAsync(image);
                 graphics.Dispose();
+                await Connection.SetImageAsync(image);
             }
         }
         /// <summary>
@@ -316,85 +292,19 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         /// </summary>
         private async Task UpdateApiDataAsync()
         {
-            item = await GetApiInstance().ExecuteAsync();
-            await Connection.SetTitleAsync(UpdateKeyTitle(item));
+            await dataBinder.ServiceExecuteAsync();
+            await Connection.SetTitleAsync(dataBinder.GetDisplayTitle());
             Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
-            await Connection.SetImageAsync(UpdateKeyImage(item));
-            LatestRefreshTime = DateTime.Now;
-            firstRunFlag = true;
+            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage());
+            pluginService.SetFirstRun();
+            pluginService.UpdateRefreshTime();
         }
         /// <summary>
         /// PI 설정에 따라 이미 수신된 Google API 데이터로 갱신합니다.
         /// </summary>
         private void UpdateValues()
         {
-            GetApiInstance().SetDisplayValue();
-        }
-        /// <summary>
-        /// 키 이미지를 변경합니다. 출력할 정보를 이미지로 변환합니다.
-        /// </summary>
-        private Bitmap UpdateKeyImage(Item item, bool autoSize = false)
-        {
-            // 배경을 만들고
-            Bitmap bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
-
-            // 그래픽 작업
-            using (Graphics graphics = Graphics.FromImage(bmp))
-            {
-                // 로고를 줄이고
-                var bmpGoogleLogo = new Bitmap(Properties.Resources.gmail, new Size(100, 100));
-
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-                graphics.DrawImage(bmpGoogleLogo, new Point(10, 30));
-
-                // 숫자를 넣고
-                var font = new Font("Arial", 48, FontStyle.Bold, GraphicsUnit.Pixel);
-                var stringFormat = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                font = autoSize ? ImageHelper.ResizeFont(graphics, item.DisplayValues[0], font) : font;
-
-                // 동그라미
-                var fontSize = graphics.MeasureString(item.DisplayValues[0], font);
-                float fontMaxSize = fontSize.Width > fontSize.Height ? fontSize.Width : fontSize.Height;
-                int padding = 5;
-                graphics.FillEllipse(new SolidBrush(Color.FromArgb(128, pluginSettings.CircleColor)), 110 - fontMaxSize / 2 - padding, 50 - fontMaxSize / 2 - padding, fontMaxSize + padding * 2, fontMaxSize + padding * 2);
-
-                graphics.DrawString(item.DisplayValues[0], font, new SolidBrush(pluginSettings.FrontColor), 110, 50, stringFormat);
-            }
-
-            return bmp;
-        }
-        private string UpdateKeyTitle(Item item)
-        {
-            return item.UserId;
-        }
-        /// <summary>
-        /// Google API 쿼리 클래스의 인스턴스를 가져옵니다.
-        /// </summary>
-        /// <returns></returns>
-        private DataBinder GetApiInstance()
-        {
-            return dataBinder ?? new DataBinder(pluginSettings, item);
-        }
-
-        private bool IsRefreshable(TimeSpan timespan)
-        {
-            if (timespan.TotalSeconds > 0 && DateTime.Now.Subtract(LatestRefreshTime).CompareTo(timespan) >= 0)
-            {
-                LatestRefreshTime = DateTime.Now;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            dataBinder.SetDisplayValue();
         }
         #endregion
     }
