@@ -23,7 +23,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
             pluginService = new();
-            dataBinder = new((payload.Settings == null || payload.Settings.Count == 0) ? PluginSettings.CreateDefaultSettings() : payload.Settings.ToObject<PluginSettings>());
+            dataBinder = new((payload.Settings == null || payload.Settings.Count == 0) ? new PluginSettings() : payload.Settings.ToObject<PluginSettings>());
 
             Connection.OnApplicationDidLaunch += Connection_OnApplicationDidLaunch;
             Connection.OnApplicationDidTerminate += Connection_OnApplicationDidTerminate;
@@ -272,14 +272,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// </summary>
         private async Task DisplayBusyAsync()
         {
-            TitleParameters tp = new TitleParameters(new FontFamily("Arial"), FontStyle.Bold, 12, Color.White, true, TitleVerticalAlignment.Middle);
-            using (Bitmap image = Tools.GenerateGenericKeyImage(out Graphics graphics))
-            {
-                graphics.FillRectangle(new SolidBrush(Color.Yellow), 0, 0, image.Width, image.Height);
-                graphics.AddTextPath(tp, image.Height, image.Width, "Loading...", Color.Black, 7); //TODO 지역화
-                graphics.Dispose();
-                await Connection.SetImageAsync(image);
-            }
+            await Connection.SetImageAsync(dataBinder.GetLoadingKeyImage());
         }
         /// <summary>
         /// PI 설정에 따라 Google API 데이터를 갱신합니다.

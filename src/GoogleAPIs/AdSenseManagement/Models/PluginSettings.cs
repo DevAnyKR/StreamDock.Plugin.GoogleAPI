@@ -9,7 +9,7 @@ using MetricsEnum = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.Gene
 
 namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 {
-    public class PluginSettings : DefaultPluginSettings, INotifyPropertyChanged
+    internal class PluginSettings : PluginSettingsBase, IPluginSettings, INotifyPropertyChanged
     {
         //? Json 속성 이름과 CS 속성 이름이 중복되면 안 됨. 대소문자 구분.
         [JsonProperty(PropertyName = "resource")]
@@ -83,16 +83,13 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
 
         public ValueTypes ValueType { get; set; }
 
-        public static PluginSettings CreateDefaultSettings()
+        internal PluginSettings()
         {
-            PluginSettings instance = new PluginSettings();
-            instance.InitializeSettings();
-            instance.PiResource = String.Empty;
-            instance.PiDateRange = String.Empty;
-            instance.PiMetric = String.Empty;
-            instance.PiDimensions = String.Empty;
-            instance.ValueType = ValueTypes.String;
-            return instance;
+            PiResource = String.Empty;
+            PiDateRange = String.Empty;
+            PiMetric = String.Empty;
+            PiDimensions = String.Empty;
+            ValueType = ValueTypes.String;
         }
     }
 }

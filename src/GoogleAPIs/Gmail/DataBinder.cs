@@ -11,11 +11,8 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
     /// <summary>
     /// API 동작 정의 프로시저
     /// </summary>
-    internal class DataBinder
+    internal class DataBinder : DataModel<PluginSettings, Item>
     {
-        internal PluginSettings pluginSettings;
-        internal Item item;
-        GoogleAuth googleAuth;
         internal bool ExistsUserCredential => GoogleAuth.CredentialExist(pluginSettings.UserTokenName);
         internal DataBinder(PluginSettings pluginSettings)
         {

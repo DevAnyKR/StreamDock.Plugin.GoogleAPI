@@ -11,7 +11,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
     /// API 데이터를 보관하는 클래스입니다. static은 스트림독의 모든 키에 공유됩니다.
     /// 데이터 형식은 API에서 제공하는 데이터 클래스를 사용하세요.
     /// </summary>
-    public class Item
+    public class Item: IItem
     {
         // 공유 데이터
         internal static IList<CalendarListEntry> Calendars { get; set; }

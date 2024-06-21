@@ -13,15 +13,12 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
     /// <summary>
     /// API 동작 정의 프로시저
     /// </summary>
-    internal class DataBinder
+    internal class DataBinder : DataModel<PluginSettings, Item>
     {
-        internal PluginSettings pluginSettings { get; set; }
-        internal Item item { get; set; }
-        GoogleAuth googleAuth;
         internal DataBinder(PluginSettings pluginsettings)
         {
             this.pluginSettings = pluginsettings;
-            this.item = new();
+            this.item = new Item();
             this.googleAuth = new();
         }
         /// <summary>
