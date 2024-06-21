@@ -4,25 +4,52 @@
     <meta charset="utf-8" />
     <title>Google Calendar</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@master/src/rangeTooltip.css">
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/rangeTooltip.js"></script>
     <script src="PluginActionPI.js"></script>
 </head>
 
 <body>
     <div class="sdpi-wrapper">
-        <div type="color" class="sdpi-item" id="dvFrontolor">
-            <div class="sdpi-item-label">Front Color</div>
-            <input type="color" class="sdpi-item-value sdProperty" value="#FFFFFF" id="frontColor" oninput="setSettings()">
-        </div>
-        <div type="color" class="sdpi-item" id="dvBackColor">
-            <div class="sdpi-item-label">Back Color</div>
-            <input type="color" class="sdpi-item-value sdProperty" value="#000000" id="backColor" oninput="setSettings()">
-        </div>
-        <div type="text" class="sdpi-item" id="dvUserTokenName">
+        <div type="text" class="sdpi-item">
             <div class="sdpi-item-label">User Token Name</div>
             <input type="text" class="sdpi-item-value sdProperty" value="user" id="userTokenName" onkeypress="javascript:if(event.keyCode == 13) setSettings();">
         </div>
+
+        <div type="group" class="sdpi-item">
+            <div class="sdpi-item-label">Refresh Interval</div>
+            <div class="sdpi-item-group">
+                <div type="range" class="sdpi-item sdShowTooltip">
+                    <div class="sdpi-item-label">Minute</div>
+                    <div class="sdpi-item-value">
+                        <span class="clickable" value="0">0</span>
+                        <input type="range" min="0" max="60" value=0 list="numbers" data-suffix="" class="sdProperty" id="refreshIntervalMin" oninput="setSettings()">
+                        <span class="clickable" value="60">60</span>
+                        <label for="refreshIntervalMin" class="rangeLabel"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div type="group" class="sdpi-item">
+            <div class="sdpi-item-label">Color</div>
+            <div class="sdpi-item-group">
+                <div type="color" class="sdpi-item">
+                    <div class="sdpi-item-label">Front Color</div>
+                    <input type="color" class="sdpi-item-value sdProperty" value="#FFFFFF" id="frontColor" oninput="setSettings()">
+                </div>
+                <div type="color" class="sdpi-item">
+                    <div class="sdpi-item-label">Back Color</div>
+                    <input type="color" class="sdpi-item-value sdProperty" value="#000000" id="backColor" oninput="setSettings()">
+                </div>
+                <div type="color" class="sdpi-item">
+                    <div class="sdpi-item-label">Circle Color</div>
+                    <input type="color" class="sdpi-item-value sdProperty" value="#FF0000" id="circleColor" oninput="setSettings()">
+                </div>
+            </div>
+        </div>
+        <div class="sdpi-info-label hidden" style="top: -1000;" value="">툴팁</div>
     </div>
 </body>
 </html>
