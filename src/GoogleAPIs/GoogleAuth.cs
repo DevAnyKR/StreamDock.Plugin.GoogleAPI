@@ -48,7 +48,7 @@ namespace StreamDock.Plugins.GoogleAPIs
                 GmailService.Scope.GmailReadonly
             };
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(30 * 1000);
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(60 * 1000);
             CancellationToken token = cancellationTokenSource.Token;
 
             try
