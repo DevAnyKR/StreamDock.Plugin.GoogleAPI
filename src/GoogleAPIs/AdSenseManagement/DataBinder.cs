@@ -57,7 +57,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         }
         internal void SetInitialValue()
         {
-            item.DisplayValues.OnlyOne("Press Key...");
+            item.DisplayValues.OnlyOne(WaitingMessage);
         }
         /// <summary>
         /// StreamDock 설정에 따라 표시할 데이터를 지정합니다.

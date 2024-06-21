@@ -23,7 +23,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         internal bool PaymentExists => !Payments.IsNullOrEmpty() && !Payments.IsNullOrEmpty() && Payments.Any();
         internal bool ReportExists => !ReportResults.IsNullOrEmpty() && !ReportResults.IsNullOrEmpty() && ReportResults.Any();
 
-        internal IList<string> DisplayValues { get; set; } = new List<string>();
+        public IList<string> DisplayValues { get; set; } = new List<string>();
 
         internal void Init()
         {

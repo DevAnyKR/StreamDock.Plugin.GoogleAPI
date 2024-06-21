@@ -38,7 +38,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         }
         internal void SetInitialValue()
         {
-            item.DisplayValues.OnlyOne("Press Key...");
+            item.DisplayValues.OnlyOne(WaitingMessage);
         }
         internal Item SetDisplayValue()
         {
@@ -70,6 +70,8 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 
             for (int i = 0; i < item.DisplayValues.Count; i++)
             {
+                if (i >= 5) continue;
+
                 var font = new Font("Arial", 32, FontStyle.Bold, GraphicsUnit.Pixel);
                 var stringFormat = new StringFormat
                 {

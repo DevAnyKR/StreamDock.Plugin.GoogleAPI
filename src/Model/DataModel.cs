@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BarRaider.SdTools.Wrappers;
 
 using BarRaider.SdTools;
+using BarRaider.SdTools.Wrappers;
 
 namespace StreamDock.Plugins.GoogleAPIs
 {
@@ -15,7 +11,7 @@ namespace StreamDock.Plugins.GoogleAPIs
         internal T1 pluginSettings { get; set; }
         internal T2 item { get; set; }
         internal GoogleAuth googleAuth;
-
+        internal string WaitingMessage = "Press Key...";
         /// <summary>
         /// 정보를 출력하기 전에 표시되는 로딩중 이미지입니다.
         /// </summary>
