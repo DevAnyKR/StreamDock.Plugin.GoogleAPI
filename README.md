@@ -18,6 +18,13 @@
 
 ![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/4ce2d45f-a60a-47ee-b79b-bce1fbf74de0)
 
+## Hardware, Original
+
+➡️ [AliExpress Store](https://s.click.aliexpress.com/e/_DC8mx5N)
+
+![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/a5a3d159-9bee-4287-a0ee-ed2abd64cf6d)
+
+
 ## How to Install...
 
 0. 스트림독을 종료합니다.
