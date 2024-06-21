@@ -1,5 +1,7 @@
 # GoogleAPI Plugin for Stream Dock
 
+[![CodeQL](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/actions/workflows/github-code-scanning/codeql)
+
 스트림독에서 구글 API 기능을 사용할 수 있습니다. 보안이 우수한 OAuth 2.0으로 구글 계정을 인증합니다.
 
 ## Preview
