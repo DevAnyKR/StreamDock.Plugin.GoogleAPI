@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: "[Bug] "
 labels: ''
 assignees: ''
 
@@ -34,5 +34,5 @@ Steps to reproduce the behavior:
 **Screenshots**
 ▶️ 
 
-**Additional context**
+**Additional context, attach pluginlog.log file**
 ▶️
