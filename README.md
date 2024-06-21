@@ -1,6 +1,14 @@
 # GoogleAPI Plugin for Stream Dock
 
-[![CodeQL](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/actions/workflows/github-code-scanning/codeql)
+![GitHub last commit](https://img.shields.io/github/last-commit/DevAnyKR/StreamDock.Plugin.GoogleAPI)
+![GitHub License](https://img.shields.io/github/license/devanykr/StreamDock.Plugin.GoogleAPI)
+![GitHub Discussions](https://img.shields.io/github/discussions/devanykr/StreamDock.Plugin.GoogleAPI)
+![GitHub repo size](https://img.shields.io/github/repo-size/devanykr/StreamDock.Plugin.GoogleAPI)
+![GitHub Repo stars](https://img.shields.io/github/stars/devanykr/StreamDock.Plugin.GoogleAPI)
+
+![GitHub Release Date](https://img.shields.io/github/release-date/devanykr/StreamDock.Plugin.GoogleAPI)
+![GitHub Release](https://img.shields.io/github/v/release/devanykr/StreamDock.Plugin.GoogleAPI)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/devanykr/StreamDock.Plugin.GoogleAPI/total)
 
 스트림독에서 구글 API 기능을 사용할 수 있습니다. 보안이 우수한 OAuth 2.0으로 구글 계정을 인증합니다.
 
@@ -40,23 +48,17 @@
  
 ## Working APIs
 
-1. AdSense Management
-2. Calendar
-3. GMail
-
-## Todo APIs
-
-- 
+- ✔️ AdSense Management
+- ✔️ Calendar
+- ✔️ GMail
+- others
 
 ## Language
 - C#.Net Framework 4.8.x
 
 ## using NuGet
 
-- Google.Apis
-- Google.Apis.Adsense.v2
-- Google.Apis.Auth
-    - System.Management
-      - System.CodeDom
+- Google.Apis.*
+- System.*
 - Newtonsoft.Json
 - StreamDeck-Tools
