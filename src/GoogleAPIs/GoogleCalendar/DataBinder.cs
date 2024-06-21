@@ -4,9 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
-using BarRaider.SdTools.Wrappers;
-using BarRaider.SdTools;
-
 using Google.Apis.Calendar.v3;
 
 namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
