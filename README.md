@@ -4,7 +4,7 @@
 ![GitHub License](https://img.shields.io/github/license/devanykr/StreamDock.Plugin.GoogleAPI)
 ![GitHub Discussions](https://img.shields.io/github/discussions/devanykr/StreamDock.Plugin.GoogleAPI)
 ![GitHub repo size](https://img.shields.io/github/repo-size/devanykr/StreamDock.Plugin.GoogleAPI)
-![GitHub Repo stars](https://img.shields.io/github/stars/devanykr/StreamDock.Plugin.GoogleAPI)
+![GitHub Repo stars](https://img.shields.io/github/stars/devanykr/StreamDock.Plugin.GoogleAPI?style=plastic&label=%E2%AD%90)
 
 ![GitHub Release Date](https://img.shields.io/github/release-date/devanykr/StreamDock.Plugin.GoogleAPI)
 ![GitHub Release](https://img.shields.io/github/v/release/devanykr/StreamDock.Plugin.GoogleAPI)
