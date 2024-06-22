@@ -192,14 +192,18 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         /// </summary>
         public async override void OnTick()
         {
-            if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
+            try
             {
-                Logger.Instance.LogMessage(TracingLevel.INFO, "Refresh...");
-                if (dataBinder.ExistsUserCredential)
+                if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
                 {
-                    await UpdateApiDataAsync();
+                    Logger.Instance.LogMessage(TracingLevel.INFO, "Refresh...");
+                    if (dataBinder.ExistsUserCredential)
+                    {
+                        await UpdateApiDataAsync();
+                    }
                 }
             }
+            catch { }
         }
 
         /// <summary>

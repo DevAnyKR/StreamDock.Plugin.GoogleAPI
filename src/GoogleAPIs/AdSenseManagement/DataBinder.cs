@@ -15,6 +15,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
     /// </summary>
     internal class DataBinder : DataModel<PluginSettings, Item>
     {
+        internal bool ExistsUserCredential => GoogleAuth.CredentialExist(pluginSettings.UserTokenName);
         internal DataBinder(PluginSettings pluginsettings)
         {
             this.pluginSettings = pluginsettings;

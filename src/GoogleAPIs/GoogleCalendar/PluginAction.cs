@@ -193,14 +193,18 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// </summary>
         public async override void OnTick()
         {
-            if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
+            try
             {
-                Logger.Instance.LogMessage(TracingLevel.INFO, "Refresh...");
-                if (GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
+                if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
                 {
-                    await UpdateApiDataAsync();
+                    Logger.Instance.LogMessage(TracingLevel.INFO, "Refresh...");
+                    if (dataBinder.ExistsUserCredential)
+                    {
+                        await UpdateApiDataAsync();
+                    }
                 }
             }
+            catch { }
         }
 
         /// <summary>

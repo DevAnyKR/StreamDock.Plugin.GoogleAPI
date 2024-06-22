@@ -27,7 +27,7 @@ namespace StreamDock.Plugins
 
         [JsonProperty(PropertyName = "refreshIntervalMin")]
         public string PiRefreshIntervalMin { get; set; } = "0";
-        internal TimeSpan RefreshIntervalMin => TimeSpan.FromMinutes(PiRefreshIntervalMin.DefaultIfEmpty("0").ToDouble());
+        public TimeSpan RefreshIntervalMin => TimeSpan.FromMinutes(PiRefreshIntervalMin.DefaultIfEmpty("0").ToDouble());
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
