@@ -86,7 +86,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         private void Connection_OnPropertyInspectorDidAppear(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidAppear> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnPropertyInspectorDidAppear Event Handled");
-
         }
 
         /// <summary>
