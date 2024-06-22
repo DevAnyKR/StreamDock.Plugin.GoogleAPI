@@ -143,6 +143,7 @@
     <Compile Include="GoogleAPIs\Interfaces\IDataModel.cs" />
     <Compile Include="GoogleAPIs\Interfaces\IItem.cs" />
     <Compile Include="GoogleAPIs\Interfaces\IPluginSettings.cs" />
+    <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Model\DataModel.cs" />
     <Compile Include="Model\PluginService.cs" />
     <Compile Include="Model\PluginSettingsBase.cs" />
