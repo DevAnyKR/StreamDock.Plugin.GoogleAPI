@@ -16,11 +16,13 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
     [PluginActionId("kr.devany.googleapi.googlecalendar")]
     public class PluginAction : KeypadBase
     {
+        InitialPayload initialPayload;
         PluginService pluginService;
         DataBinder dataBinder;
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
+            this.initialPayload = payload;
             pluginService = new();
             dataBinder = new((payload.Settings == null || payload.Settings.Count == 0) ? new PluginSettings() : payload.Settings.ToObject<PluginSettings>());
 
@@ -45,7 +47,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             try
             {
-                Logger.Instance.LogMessage(TracingLevel.INFO, "OnTitleParametersDidChange Event Handled");
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnTitleParametersDidChange Event Handled");
                 if (!pluginService.HasExecuteOnce)
                 {
                     if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
@@ -75,7 +77,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="e"></param>
         private void Connection_OnSendToPlugin(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.SendToPlugin> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnSendToPlugin Event Handled");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnSendToPlugin Event Handled");
         }
 
         /// <summary>
@@ -85,7 +87,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="e"></param>
         private void Connection_OnPropertyInspectorDidAppear(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidAppear> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnPropertyInspectorDidAppear Event Handled");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnPropertyInspectorDidAppear Event Handled");
 
         }
 
@@ -96,7 +98,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="e"></param>
         private void Connection_OnPropertyInspectorDidDisappear(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidDisappear> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnPropertyInspectorDidDisappear Event Handled");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnPropertyInspectorDidDisappear Event Handled");
         }
 
 
@@ -107,7 +109,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="e"></param>
         private void Connection_OnDeviceDidDisconnect(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.DeviceDidDisconnect> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnDeviceDidDisconnect Event Handled");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnDeviceDidDisconnect Event Handled");
         }
 
         /// <summary>
@@ -117,7 +119,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="e"></param>
         private void Connection_OnDeviceDidConnect(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.DeviceDidConnect> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnDeviceDidConnect Event Handled");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnDeviceDidConnect Event Handled");
         }
 
         /// <summary>
@@ -127,7 +129,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="e"></param>
         private void Connection_OnApplicationDidTerminate(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.ApplicationDidTerminate> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnApplicationDidTerminate Event Handled");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnApplicationDidTerminate Event Handled");
         }
 
         /// <summary>
@@ -137,11 +139,11 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="e"></param>
         private void Connection_OnApplicationDidLaunch(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.ApplicationDidLaunch> e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "OnApplicationDidLaunch Event Handled");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnApplicationDidLaunch Event Handled");
         }
         private void PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"{e.PropertyName} Property Changed");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] {e.PropertyName} Property Changed");
         }
 
         /// <summary>
@@ -149,7 +151,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// </summary>
         public override void Dispose()
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "Destructor called");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] Destructor called");
         }
 
         /// <summary>
@@ -158,7 +160,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         /// <param name="payload"></param>
         public override void KeyPressed(KeyPayload payload)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "KeyPressed called");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{payload.Coordinates.Row},{payload.Coordinates.Column}] KeyPressed called");
         }
 
         /// <summary>
@@ -169,7 +171,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             try
             {
-                Logger.Instance.LogMessage(TracingLevel.INFO, "KeyReleased called");
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"[{payload.Coordinates.Row},{payload.Coordinates.Column}] KeyReleased called");
                 if (GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName) && dataBinder.CheckExistData())
                 {
                     await Connection.OpenUrlAsync(dataBinder.item.Events.Items.First().HtmlLink);
@@ -197,7 +199,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             {
                 if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
                 {
-                    Logger.Instance.LogMessage(TracingLevel.INFO, "Refresh...");
+                    Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] Refresh...");
                     if (dataBinder.ExistsUserCredential)
                     {
                         await UpdateApiDataAsync();
@@ -215,7 +217,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             try
             {
-                Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedSettings called");
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"[{payload.Coordinates.Row},{payload.Coordinates.Column}] ReceivedSettings called");
                 Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
                 await SaveSettingsAsync();
 
@@ -244,7 +246,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
 
         public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, "ReceivedGlobalSettings called");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] ReceivedGlobalSettings called");
             Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
         }
 
@@ -284,7 +286,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
         {
             await dataBinder.ServiceExecuteAsync();
             await Connection.SetTitleAsync(dataBinder.GetDisplayTitle());
-            Logger.Instance.LogMessage(TracingLevel.INFO, "UpdateApiDataAsync: Sending Image to Stream Dock...");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] UpdateApiDataAsync: Sending Image to Stream Dock...");
             await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage());
             pluginService.SetFirstRun();
             pluginService.UpdateRefreshTime();
