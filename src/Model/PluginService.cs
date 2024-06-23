@@ -25,7 +25,7 @@ namespace StreamDock.Plugins
         /// <summary>
         /// 처음 실행되었음을 설정합니다.
         /// </summary>
-        internal void SetFirstRun()
+        internal void SetExecuted()
         {
             HasExecuteOnce = true;
         }

@@ -209,7 +209,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] ReceivedSettings called");
 
             Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
-            await SaveSettingsAsync(); // 스트림독으로 설정 업로드
+            //await SaveSettingsAsync(); // 스트림독으로 설정 업로드
 
             if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
             {
@@ -271,7 +271,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             await dataBinder.ServiceExecuteAsync();
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] UpdateApiDataAsync: Sending Image to Stream Dock...");
             await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage());
-            pluginService.SetFirstRun();
+            pluginService.SetExecuted();
             pluginService.UpdateRefreshTime();
         }
         /// <summary>

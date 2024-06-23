@@ -219,7 +219,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"[{payload.Coordinates.Row},{payload.Coordinates.Column}] ReceivedSettings called");
                 Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
-                await SaveSettingsAsync();
+                //await SaveSettingsAsync();
 
                 if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
                 {
@@ -288,7 +288,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             await Connection.SetTitleAsync(dataBinder.GetDisplayTitle());
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] UpdateApiDataAsync: Sending Image to Stream Dock...");
             await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage());
-            pluginService.SetFirstRun();
+            pluginService.SetExecuted();
             pluginService.UpdateRefreshTime();
         }
         /// <summary>
