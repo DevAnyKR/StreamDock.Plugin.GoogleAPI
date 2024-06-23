@@ -31,7 +31,7 @@ namespace StreamDock.Plugins
         }
         internal bool IsRefreshable(TimeSpan timespan)
         {
-            if (timespan.TotalSeconds > 0 && DateTime.Now.Subtract(LatestRefreshTime).CompareTo(timespan) >= 0)
+            if (timespan.TotalSeconds > 0 && DateTime.Now.Subtract(LatestRefreshTime).CompareTo(timespan) > 0)
             {
                 UpdateRefreshTime();
                 return true;

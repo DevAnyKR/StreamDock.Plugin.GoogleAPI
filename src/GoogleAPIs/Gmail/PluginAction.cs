@@ -49,7 +49,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnTitleParametersDidChange Event Handled");
                 if (!pluginService.HasExecuteOnce)
                 {
-                    if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
+                    if (!dataBinder.ExistsUserCredential)
                     {
                         await DisplayInitialAsync();
                     }
@@ -87,7 +87,6 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         private void Connection_OnPropertyInspectorDidAppear(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidAppear> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnPropertyInspectorDidAppear Event Handled");
-
         }
 
         /// <summary>
@@ -140,7 +139,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnApplicationDidLaunch Event Handled");
         }
-        private void PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] {e.PropertyName} Property Changed");
         }
@@ -171,9 +170,17 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             try
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] KeyReleased called");
-                if (GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName) && dataBinder.CheckExistData())
+                if (dataBinder.ExistsUserCredential)
                 {
-                    await Connection.OpenUrlAsync("https://mail.google.com/");
+                    if (dataBinder.CheckExistData())
+                    {
+                        await Connection.OpenUrlAsync("https://mail.google.com/");
+                    }
+                    else
+                    {
+                        await DisplayBusyAsync();
+                        await UpdateApiDataAsync();
+                    }
                 }
                 else
                 {
@@ -220,19 +227,11 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
                 Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
                 //await SaveSettingsAsync();
 
-                if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
-                {
-                    dataBinder.item.Init();
-                    await DisplayInitialAsync();
-                }
-                else if (dataBinder.CheckExistData())
+                await DisplayInitialAsync();
+                if (dataBinder.ExistsUserCredential)
                 {
                     await DisplayBusyAsync();
                     await UpdateApiDataAsync();
-                }
-                else
-                {
-                    await DisplayInitialAsync();
                 }
             }
             catch (Exception ex)
@@ -263,20 +262,13 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
         /// </summary>
         private async Task DisplayInitialAsync()
         {
+            dataBinder.SetInitialValue();
             await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage()); // 초기 이미지 출력
         }
         private async Task DisplayPreValueAsync()
         {
-            try
-            {
-                UpdateValues();
-                await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage()); // 초기 이미지 출력
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
-                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
-            }
+            UpdateValues();
+            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage()); // 초기 이미지 출력
         }
         /// <summary>
         /// 작업 중임을 알리는 이미지를 표시합니다.

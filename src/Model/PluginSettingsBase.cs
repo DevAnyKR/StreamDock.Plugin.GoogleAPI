@@ -23,7 +23,19 @@ namespace StreamDock.Plugins
 
         [JsonProperty(PropertyName = "userTokenName")]
         public string PiUserTokenName { get; set; } = "user";
-        internal string UserTokenName => PiUserTokenName;
+        private string userTokenName;
+        internal string UserTokenName
+        {
+            get
+            {
+                if (userTokenName != PiUserTokenName)
+                {
+                    userTokenName = PiUserTokenName;
+                    OnPropertyChanged("UserTokenName");
+                }
+                return userTokenName;
+            }
+        }
 
         [JsonProperty(PropertyName = "refreshIntervalMin")]
         public string PiRefreshIntervalMin { get; set; } = "0";
