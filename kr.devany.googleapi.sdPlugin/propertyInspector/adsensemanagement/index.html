@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@master/src/rangeTooltip.css">
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/rangeTooltip.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="PluginActionPI.js"></script>
 </head>
 
@@ -17,13 +18,13 @@
             <div class="sdpi-item-group">
                 <div class="sdpi-item">
                     <div class="sdpi-item-label">Resource Type</div>
-                    <select class="sdpi-item-value select sdProperty" id="resource" oninput="setSettings()">
-                        <option value="Payments" selected>Payments</option>
+                    <select class="sdpi-item-value select sdProperty" id="resource" oninput="setSettings()" onchange="ResourceTypeChanged()">
+                        <option value="Payments">Payments</option>
                         <option value="Reports">Reports</option>
                         <option value="Dimensions">Dimensions</option>
                     </select>
                 </div>
-                <div class="sdpi-item">
+                <div class="sdpi-item" id="dvDateRange">
                     <div class="sdpi-item-label">Date Range</div>
                     <select class="sdpi-item-value select sdProperty" id="dateRange" oninput="setSettings()">
                         <option value="TODAY">Today</option>
@@ -34,7 +35,7 @@
                         <option value="LAST30DAYS">Last 30 Days</option>
                     </select>
                 </div>
-                <div class="sdpi-item">
+                <div class="sdpi-item" id="dvMetrics">
                     <div class="sdpi-item-label">Metrics</div>
                     <select class="sdpi-item-value select sdProperty" id="metrics" oninput="setSettings()">
                         <option value="PAGEVIEWS">Page Views</option>

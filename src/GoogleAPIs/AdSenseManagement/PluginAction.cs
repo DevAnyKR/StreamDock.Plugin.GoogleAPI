@@ -48,7 +48,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnTitleParametersDidChange Event Handled");
                 if (!pluginService.HasExecuteOnce)
                 {
-                    if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
+                    if (!dataBinder.ExistsUserCredential)
                     {
                         await DisplayInitialAsync();
                     }
@@ -86,7 +86,6 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         private void Connection_OnPropertyInspectorDidAppear(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.PropertyInspectorDidAppear> e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnPropertyInspectorDidAppear Event Handled");
-
         }
 
         /// <summary>
@@ -188,7 +187,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         public async override void OnTick()
         {
             try
-            { 
+            {
                 if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
                 {
                     Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row}, {initialPayload.Coordinates.Column}] Refresh...");
@@ -207,25 +206,25 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
         /// <param name="payload"></param>
         public async override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] ReceivedSettings called");
+            try
+            {
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] ReceivedSettings called");
 
-            Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
-            await SaveSettingsAsync(); // 스트림독으로 설정 업로드
+                Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
+                //await SaveSettingsAsync(); // 스트림독으로 설정 업로드
 
-            if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
-            {
-                dataBinder.item.Init();
-                dataBinder = null;
                 await DisplayInitialAsync();
+                if (dataBinder.ExistsUserCredential)
+                {
+                    await DisplayBusyAsync();
+                    await UpdateApiDataAsync();
+                }
             }
-            else if (dataBinder.CheckExistData())
+            catch (Exception ex)
             {
-                await DisplayBusyAsync();
-                await UpdateApiDataAsync();
-            }
-            else
-            {
-                await DisplayInitialAsync();
+                await Connection.ShowAlert();
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.Message);
+                Logger.Instance.LogMessage(TracingLevel.ERROR, ex.StackTrace);
             }
         }
 
@@ -272,7 +271,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             await dataBinder.ServiceExecuteAsync();
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] UpdateApiDataAsync: Sending Image to Stream Dock...");
             await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage());
-            pluginService.SetFirstRun();
+            pluginService.SetExecuted();
             pluginService.UpdateRefreshTime();
         }
         /// <summary>

@@ -17,7 +17,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             this.item = new Item();
             this.googleAuth = new();
         }
-        internal async Task<Item> ServiceExecuteAsync()
+        internal async Task ServiceExecuteAsync()
         {
             ApiService apiSevice = new ApiService(googleAuth.userCredential, new CalendarService(await googleAuth.GetServiceInitializerAsync(pluginSettings.UserTokenName)));
 
@@ -31,27 +31,31 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             }
 
             item.Events = await apiSevice.CalendarEventsToday(item.calendarID);
-            item = SetDisplayValue();
-            return item;
+            SetDisplayValue();
         }
         internal void SetInitialValue()
         {
             item.DisplayValues.OnlyOne(WaitingMessage);
         }
-        internal Item SetDisplayValue()
+        internal void SetDisplayValue()
         {
             item.DisplayValues.Clear();
 
-            foreach (var value in item.Events.Items)
+            if (!item.Events.Items.Any())
             {
-                if (value.End.Date.IsDateTime())
-                {
-                    //TODO 종일 또는 종료시각 설정에 따라 처리
-                }
-                item.DisplayValues.Add(value.Summary);
+                item.DisplayValues.Add("No Data!");
             }
-
-            return item;
+            else
+            {
+                foreach (var value in item.Events.Items)
+                {
+                    if (value.End.Date.IsDateTime())
+                    {
+                        //TODO 종일 또는 종료시각 설정에 따라 처리
+                    }
+                    item.DisplayValues.Add(value.Summary);
+                }
+            }
         }
         internal string GetDisplayTitle()
         {

@@ -25,13 +25,13 @@ namespace StreamDock.Plugins
         /// <summary>
         /// 처음 실행되었음을 설정합니다.
         /// </summary>
-        internal void SetFirstRun()
+        internal void SetExecuted()
         {
             HasExecuteOnce = true;
         }
         internal bool IsRefreshable(TimeSpan timespan)
         {
-            if (timespan.TotalSeconds > 0 && DateTime.Now.Subtract(LatestRefreshTime).CompareTo(timespan) >= 0)
+            if (timespan.TotalSeconds > 0 && DateTime.Now.Subtract(LatestRefreshTime).CompareTo(timespan) > 0)
             {
                 UpdateRefreshTime();
                 return true;

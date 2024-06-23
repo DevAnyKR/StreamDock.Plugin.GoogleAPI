@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Oauth2.v2;
 using System.Collections.Generic;
+using BarRaider.SdTools;
 
 namespace StreamDock.Plugins.GoogleAPIs.Gmail
 {
@@ -18,31 +19,24 @@ namespace StreamDock.Plugins.GoogleAPIs.Gmail
             this.item = new();
             this.googleAuth = new();
         }
-        internal async Task<Item> ServiceExecuteAsync()
+        internal async Task ServiceExecuteAsync()
         {
-            Oauth2Service oauth2Service = new Oauth2Service(googleAuth.GetServiceInitializerAsync(pluginSettings.UserTokenName).Result);
-            item.UserId = oauth2Service.Userinfo.Get().Execute().Email;
+            ApiService apiSevice = new ApiService(googleAuth.userCredential, pluginSettings.UserTokenName);
 
-            ApiService apiSevice = new ApiService(googleAuth.userCredential, new GmailService(await googleAuth.GetServiceInitializerAsync(pluginSettings.UserTokenName)));
+            item.UserId = apiSevice.GetUserId();
+            item.MessageUnReadCount = apiSevice.GetResultSizeEstimate(item.UserId);
 
-            var request = await apiSevice.GetMessagesListAsync(item.UserId, "UNREAD");
-
-            item.MessageUnReadCount = request.ResultSizeEstimate;
-
-            item = SetDisplayValue();
-
-            return item;
+            SetDisplayValue();
         }
         internal void SetInitialValue()
         {
-            item.DisplayValues.OnlyOne(WaitingMessage);
+            item.Init();
+            item.DisplayValues.OnlyOne("0");
         }
-        internal Item SetDisplayValue()
+        internal void SetDisplayValue()
         {
             item.DisplayValues.Clear();
             item.DisplayValues.Add(item.MessageUnReadCount.ToString());
-
-            return item;
         }
         internal string GetDisplayTitle()
         {

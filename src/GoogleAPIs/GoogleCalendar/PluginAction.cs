@@ -50,7 +50,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnTitleParametersDidChange Event Handled");
                 if (!pluginService.HasExecuteOnce)
                 {
-                    if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
+                    if (!dataBinder.ExistsUserCredential)
                     {
                         await DisplayInitialAsync();
                     }
@@ -172,9 +172,17 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             try
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"[{payload.Coordinates.Row},{payload.Coordinates.Column}] KeyReleased called");
-                if (GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName) && dataBinder.CheckExistData())
+                if (dataBinder.ExistsUserCredential)
                 {
-                    await Connection.OpenUrlAsync(dataBinder.item.Events.Items.First().HtmlLink);
+                    if (dataBinder.CheckExistData())
+                    {
+                        await Connection.OpenUrlAsync(dataBinder.item.Events.Items.First().HtmlLink);
+                    }
+                    else
+                    {
+                        await DisplayBusyAsync();
+                        await UpdateApiDataAsync();
+                    }
                 }
                 else
                 {
@@ -219,9 +227,9 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"[{payload.Coordinates.Row},{payload.Coordinates.Column}] ReceivedSettings called");
                 Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
-                await SaveSettingsAsync();
+                //await SaveSettingsAsync();
 
-                if (!GoogleAuth.CredentialExist(dataBinder.pluginSettings.UserTokenName))
+                if (!dataBinder.ExistsUserCredential)
                 {
                     dataBinder.item.Init();
                     await DisplayInitialAsync();
@@ -288,7 +296,7 @@ namespace StreamDock.Plugins.GoogleAPIs.GoogleCalendar
             await Connection.SetTitleAsync(dataBinder.GetDisplayTitle());
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] UpdateApiDataAsync: Sending Image to Stream Dock...");
             await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage());
-            pluginService.SetFirstRun();
+            pluginService.SetExecuted();
             pluginService.UpdateRefreshTime();
         }
         /// <summary>
