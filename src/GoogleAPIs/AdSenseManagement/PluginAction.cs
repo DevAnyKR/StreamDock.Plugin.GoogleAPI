@@ -190,7 +190,7 @@ namespace StreamDock.Plugins.GoogleAPIs.AdSenseManagement
             {
                 if (pluginService.IsRefreshable(dataBinder.pluginSettings.RefreshIntervalMin))
                 {
-                    Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row}, {initialPayload.Coordinates.Column}] Refresh...");
+                    Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] Refresh...");
                     if (dataBinder.ExistsUserCredential)
                     {
                         await UpdateApiDataAsync();
