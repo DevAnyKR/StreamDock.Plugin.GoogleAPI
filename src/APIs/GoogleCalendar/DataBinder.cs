@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
+﻿namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
 {
     internal class DataBinder : DataModel<PluginSettings, Item>
     {

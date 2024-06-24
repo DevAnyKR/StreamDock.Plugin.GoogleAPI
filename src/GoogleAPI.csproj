@@ -39,7 +39,19 @@
     <RepositoryUrl>https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI</RepositoryUrl>
     <PackageProjectUrl>https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI</PackageProjectUrl>
     <PackageTags>Google Api;Stream Dock</PackageTags>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>9999</WarningLevel>
+    <NoWarn>1701;1702;CA1416;S2933</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>9999</WarningLevel>
+    <NoWarn>1701;1702;CA1416;S2933</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="App.config" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Base\" />
     <Folder Include="Apis\Oauth2\" />
@@ -86,5 +98,12 @@
       <Private>True</Private>
       <EmbedInteropTypes></EmbedInteropTypes>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="BarRaider.SdTools" />
+    <Using Include="BarRaider.SdTools.Wrappers" />
+    <Using Include="Newtonsoft.Json" />
+    <Using Include="Newtonsoft.Json.Linq" />
+    <Using Include="System.ComponentModel" />
   </ItemGroup>
 </Project>

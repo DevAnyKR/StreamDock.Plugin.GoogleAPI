@@ -1,12 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-
-using BarRaider.SdTools;
-using BarRaider.SdTools.Wrappers;
-
-using Newtonsoft.Json.Linq;
-namespace StreamDock.Plugin.GoogleAPI.AdSenseManagement
+﻿namespace StreamDock.Plugin.GoogleAPI.AdSenseManagement
 {
     /// <summary>
     /// manifest.json 에서 선언한 플러그인 UUID

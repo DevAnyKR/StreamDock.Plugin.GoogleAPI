@@ -1,13 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-
-using BarRaider.SdTools;
-using BarRaider.SdTools.Wrappers;
-
-using Newtonsoft.Json.Linq;
-
-namespace StreamDock.Plugin.GoogleAPI.Gmail
+﻿namespace StreamDock.Plugin.GoogleAPI.Gmail
 {
     /// <summary>
     /// manifest.json 에서 선언한 플러그인 UUID
@@ -139,7 +130,7 @@ namespace StreamDock.Plugin.GoogleAPI.Gmail
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] OnApplicationDidLaunch Event Handled");
         }
-        private async void PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] {e.PropertyName} Property Changed");
         }
@@ -212,7 +203,10 @@ namespace StreamDock.Plugin.GoogleAPI.Gmail
                     }
                 }
             }
-            catch { }
+            catch
+            {
+                //null
+            }
         }
 
         /// <summary>
@@ -225,7 +219,7 @@ namespace StreamDock.Plugin.GoogleAPI.Gmail
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] ReceivedSettings called");
                 Tools.AutoPopulateSettings(dataBinder.pluginSettings, payload.Settings);
-                //await SaveSettingsAsync();
+                // await SaveSettingsAsync();
 
                 await DisplayInitialAsync();
                 if (dataBinder.ExistsUserCredential)

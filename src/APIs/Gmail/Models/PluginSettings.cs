@@ -1,12 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-
-using BarRaider.SdTools;
-
-using Newtonsoft.Json;
-
-namespace StreamDock.Plugin.GoogleAPI.Gmail
+﻿namespace StreamDock.Plugin.GoogleAPI.Gmail
 {
     internal class PluginSettings : PluginSettingsBase, IPluginSettings, INotifyPropertyChanged
     {

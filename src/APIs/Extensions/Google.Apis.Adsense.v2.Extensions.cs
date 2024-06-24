@@ -1,6 +1,4 @@
-﻿using System;
-
-using Google.Apis.Util;
+﻿using Google.Apis.Util;
 
 using GenerateRequest = Google.Apis.Adsense.v2.AccountsResource.ReportsResource.GenerateRequest;
 

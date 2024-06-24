@@ -1,12 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-
-using BarRaider.SdTools;
-
-using Newtonsoft.Json;
-
-namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
+﻿namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
 {
     internal class PluginSettings : PluginSettingsBase, IPluginSettings, INotifyPropertyChanged
     {

@@ -1,15 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-
-using BarRaider.SdTools;
-
-using Newtonsoft.Json;
-
-using StreamDock.Plugin.GoogleAPI;
-
-namespace StreamDock.Plugin
+﻿namespace StreamDock.Plugin
 {
     abstract internal class PluginSettingsBase
     {

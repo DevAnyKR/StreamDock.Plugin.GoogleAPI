@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using BarRaider.SdTools;
-
-using Google.Apis.Adsense.v2; // https://googleapis.dev/dotnet/Google.Apis.Adsense.v2/latest/api/Google.Apis.Adsense.v2.html
+﻿using Google.Apis.Adsense.v2; // https://googleapis.dev/dotnet/Google.Apis.Adsense.v2/latest/api/Google.Apis.Adsense.v2.html
 using Google.Apis.Adsense.v2.Data;
 using Google.Apis.Auth.OAuth2;
 

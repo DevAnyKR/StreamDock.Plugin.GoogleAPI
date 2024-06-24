@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
+﻿using System.Data;
 using System.Windows.Forms.DataVisualization.Charting;
-
-using BarRaider.SdTools;
 
 using Google.Apis.Adsense.v2.Data;
 
@@ -67,9 +62,9 @@ namespace StreamDock.Plugin.GoogleAPI.AdSenseManagement
             ChartArea chartArea1;
             Series series1;
 
-            chart.Margin = new System.Windows.Forms.Padding(0);
-            chart.Padding = new System.Windows.Forms.Padding(0);
-            chart.Size = new Size(144, 144); //TODO to variables
+            chart.Margin = new Padding(0);
+            chart.Padding = new Padding(0);
+            chart.Size = new Size(144, 144);
             chart.BackColor = Color.Black;
             chart.ForeColor = Color.White;
             chart.BorderColor = Color.White;

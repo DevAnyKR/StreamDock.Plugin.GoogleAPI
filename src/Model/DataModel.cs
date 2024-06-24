@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-
-using BarRaider.SdTools;
-using BarRaider.SdTools.Wrappers;
-
-namespace StreamDock.Plugin.GoogleAPI
+﻿namespace StreamDock.Plugin.GoogleAPI
 {
     internal abstract class DataModel<T1, T2>
     {

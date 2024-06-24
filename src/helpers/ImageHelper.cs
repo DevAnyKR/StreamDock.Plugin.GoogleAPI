@@ -1,8 +1,4 @@
-﻿using BarRaider.SdTools;
-
-using System.Drawing;
-
-namespace StreamDock.Plugin
+﻿namespace StreamDock.Plugin
 {
     public class ImageHelper
     {

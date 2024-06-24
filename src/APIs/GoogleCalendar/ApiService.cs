@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 
@@ -71,8 +66,8 @@ namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
             var requeust = service.Events.List(id);
 
             requeust.MaxResults = 5;
-            requeust.TimeMin = DateTime.Today;
-            requeust.TimeMax = DateTime.Today.AddDays(1).AddSeconds(-1);
+            requeust.TimeMinDateTimeOffset = DateTime.Today;
+            requeust.TimeMaxDateTimeOffset = DateTime.Today.AddDays(1).AddSeconds(-1);
 
             var result = await requeust.ExecuteAsync();
 

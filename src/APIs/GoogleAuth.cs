@@ -1,11 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-using BarRaider.SdTools;
-
-using Google.Apis.Adsense.v2;
+﻿using Google.Apis.Adsense.v2;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Gmail.v1;
@@ -23,7 +16,7 @@ namespace StreamDock.Plugin.GoogleAPI
         internal static readonly string TokenFilePrefix = $"Google.Apis.Auth.OAuth2.Responses.TokenResponse-";
         internal UserCredential userCredential;
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
-        readonly bool useLock = false;
+        readonly bool useLock = true;
         internal GoogleAuth()
         {
 
@@ -102,7 +95,6 @@ namespace StreamDock.Plugin.GoogleAPI
         }
         internal static bool CredentialExist(string user)
         {
-            //TODO 구글 메서드로 유효성 점검
             //! UserCredential 인증 과정 보류 시 프로세스가 멈추므로 토큰 파일 직접 확인
             return File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), TokenPath, $"{TokenFilePrefix}{user}"));
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Google.Apis.Calendar.v3;
+﻿using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 
 namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar

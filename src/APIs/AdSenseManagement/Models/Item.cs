@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-
-using Google.Apis.Adsense.v2.Data;
+﻿using Google.Apis.Adsense.v2.Data;
 
 namespace StreamDock.Plugin.GoogleAPI.AdSenseManagement
 {
