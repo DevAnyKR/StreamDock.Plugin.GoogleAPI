@@ -7,9 +7,9 @@ using BarRaider.SdTools;
 
 using Newtonsoft.Json;
 
-using StreamDock.Plugins.GoogleAPIs;
+using StreamDock.Plugin.GoogleAPI;
 
-namespace StreamDock.Plugins
+namespace StreamDock.Plugin
 {
     abstract internal class PluginSettingsBase
     {

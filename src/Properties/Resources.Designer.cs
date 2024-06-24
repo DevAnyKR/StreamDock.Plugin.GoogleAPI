@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace StreamDock.Plugins.GoogleAPIs.Properties {
+namespace StreamDock.Plugin.GoogleAPI.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace StreamDock.Plugins.GoogleAPIs.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StreamDock.Plugins.GoogleAPIs.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StreamDock.Plugin.GoogleAPI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

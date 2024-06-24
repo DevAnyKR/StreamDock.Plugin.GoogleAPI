@@ -1,6 +1,6 @@
 ﻿using BarRaider.SdTools;
 
-namespace StreamDock.Plugins
+namespace StreamDock.Plugin
 {
     internal class Program
     {
