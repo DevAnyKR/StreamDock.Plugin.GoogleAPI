@@ -68,4 +68,5 @@ Stream Dock 100% Compatible Brands: MiraBox, AJAZZ, Monstar Deck
 - Google.Apis.*
 - System.*
 - Newtonsoft.Json
-- StreamDeck-Tools
+- [StreamDeck-Tools](https://github.com/BarRaider/streamdeck-tools)
+- [DevAny.MAS.Extensions](https://github.com/DevAnyKR/MAS.Libraries)
