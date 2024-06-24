@@ -62,10 +62,9 @@ Stream Dock 100% Compatible Brands: MiraBox, AJAZZ, Monstar Deck
 - others
 
 ## Language
-- C#.Net Framework 4.8.x
+- C#.Net 6
 
 ## using NuGet
-
 - Google.Apis.*
 - System.*
 - Newtonsoft.Json
