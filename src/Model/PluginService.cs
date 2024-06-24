@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StreamDock.Plugins
+namespace StreamDock.Plugin
 {
     /// <summary>
     /// 플러그인의 동작을 보조하는 클래스

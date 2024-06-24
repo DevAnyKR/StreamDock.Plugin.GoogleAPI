@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-namespace StreamDock.Plugins
+namespace StreamDock.Plugin
 {
     internal class JsonHelper
     {

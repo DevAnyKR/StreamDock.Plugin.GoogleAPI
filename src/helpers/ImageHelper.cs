@@ -2,7 +2,7 @@
 
 using System.Drawing;
 
-namespace StreamDock.Plugins
+namespace StreamDock.Plugin
 {
     public class ImageHelper
     {

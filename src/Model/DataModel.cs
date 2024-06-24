@@ -4,7 +4,7 @@ using System.Drawing;
 using BarRaider.SdTools;
 using BarRaider.SdTools.Wrappers;
 
-namespace StreamDock.Plugins.GoogleAPIs
+namespace StreamDock.Plugin.GoogleAPI
 {
     internal abstract class DataModel<T1, T2>
     {
