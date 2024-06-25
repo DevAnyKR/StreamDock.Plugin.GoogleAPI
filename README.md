@@ -14,9 +14,8 @@
 
 ## Preview
 
+![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/ad235488-6538-4c9d-8640-c9d83c5c8503)
 ![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/e156bae5-c4bd-4de1-830a-45f8ee3842ee)
-
-![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/47620879-649f-4fb8-bad7-f32ac1f417c1)
 
 ## Hardware, Original
 
