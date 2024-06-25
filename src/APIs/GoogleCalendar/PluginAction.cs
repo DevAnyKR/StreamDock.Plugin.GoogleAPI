@@ -1,4 +1,6 @@
-﻿namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
+﻿using System.Timers;
+
+namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
 {
     /// <summary>
     /// manifest.json 에서 선언한 플러그인 UUID
@@ -9,12 +11,18 @@
         InitialPayload initialPayload;
         PluginService pluginService;
         DataBinder dataBinder;
+        Bitmap displayImage;
+        readonly object displayImageLocker = new();
+        PeriodicTimer periodicTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(500));
+        private readonly CancellationTokenSource periodicTimerCts = new CancellationTokenSource();
 
         public PluginAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
         {
             this.initialPayload = payload;
             pluginService = new();
             dataBinder = new((payload.Settings == null || payload.Settings.Count == 0) ? new PluginSettings() : payload.Settings.ToObject<PluginSettings>());
+
+            Task.Run(async () => await DisplayImageTickAsync(null, null));
 
             Connection.OnApplicationDidLaunch += Connection_OnApplicationDidLaunch;
             Connection.OnApplicationDidTerminate += Connection_OnApplicationDidTerminate;
@@ -42,7 +50,7 @@
                 {
                     if (!dataBinder.ExistsUserCredential)
                     {
-                        await DisplayInitialAsync();
+                        await InitDisplayValueAsync();
                     }
                     else
                     {
@@ -142,6 +150,8 @@
         public override void Dispose()
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] Destructor called");
+            periodicTimerCts.Cancel();
+            periodicTimerCts.Dispose();
         }
 
         /// <summary>
@@ -222,7 +232,7 @@
                 if (!dataBinder.ExistsUserCredential)
                 {
                     dataBinder.item.Init();
-                    await DisplayInitialAsync();
+                    await InitDisplayValueAsync();
                 }
                 else if (dataBinder.CheckExistData())
                 {
@@ -231,7 +241,7 @@
                 }
                 else
                 {
-                    await DisplayInitialAsync();
+                    await InitDisplayValueAsync();
                 }
             }
             catch (Exception ex)
@@ -260,22 +270,20 @@
         /// <summary>
         /// 초기 이미지를 표시합니다.
         /// </summary>
-        private async Task DisplayInitialAsync()
+        private async Task InitDisplayValueAsync()
         {
-            dataBinder.SetInitialValue();
-            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage(true)); // 초기 이미지 출력
-        }
-        private async Task DisplayPreValueAsync()
-        {
-            UpdateValues();
-            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage(true)); // 초기 이미지 출력
+            dataBinder.SetInitValue();
         }
         /// <summary>
         /// 작업 중임을 알리는 이미지를 표시합니다.
         /// </summary>
         private async Task DisplayBusyAsync()
         {
-            await Connection.SetImageAsync(dataBinder.GetLoadingKeyImage());
+            lock (displayImageLocker)
+            {
+                displayImage = dataBinder.GetLoadingKeyImage();
+                Connection.SetImageAsync(displayImage);
+            }
         }
         /// <summary>
         /// PI 설정에 따라 Google API 데이터를 갱신합니다.
@@ -284,17 +292,22 @@
         {
             await dataBinder.ServiceExecuteAsync();
             await Connection.SetTitleAsync(dataBinder.GetDisplayTitle());
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"[{initialPayload.Coordinates.Row},{initialPayload.Coordinates.Column}] UpdateApiDataAsync: Sending Image to Stream Dock...");
-            await Connection.SetImageAsync(dataBinder.GetUpdateKeyImage());
             pluginService.SetExecuted();
             pluginService.UpdateRefreshTime();
         }
-        /// <summary>
-        /// PI 설정에 따라 이미 수신된 Google API 데이터로 갱신합니다.
-        /// </summary>
-        private void UpdateValues()
+        private async Task DisplayImageTickAsync(object sender, ElapsedEventArgs e)
         {
-            dataBinder.SetDisplayValue();
+            while (await periodicTimer.WaitForNextTickAsync(periodicTimerCts.Token))
+            {
+                lock (displayImageLocker)
+                {
+                    displayImage = dataBinder.GetUpdateKeyImage(false);
+                }
+                if (displayImage != null)
+                {
+                    Connection.SetImageAsync(displayImage);
+                }
+            }
         }
         #endregion
     }

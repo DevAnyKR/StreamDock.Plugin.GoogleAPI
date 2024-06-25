@@ -1,4 +1,6 @@
-﻿namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
+﻿using System.Drawing;
+
+namespace StreamDock.Plugin.GoogleAPI.GoogleCalendar
 {
     internal class DataBinder : DataModel<PluginSettings, Item>
     {
@@ -25,7 +27,7 @@
             item.Events = await apiSevice.CalendarEventsToday(item.calendarID);
             SetDisplayValue();
         }
-        internal void SetInitialValue()
+        internal void SetInitValue()
         {
             item.DisplayValues.OnlyOne(WaitingMessage);
         }
@@ -58,26 +60,42 @@
             if (item.Events is null) return false;
             return item.Events.Items.Any();
         }
+
+        int[] strOffset = [0, 0, 0, 0, 0];
         internal Bitmap GetUpdateKeyImage(bool autoSize = false)
         {
             Bitmap bmp = new Bitmap(ImageHelper.GetImage(pluginSettings.BackColor));
 
             for (int i = 0; i < item.DisplayValues.Count; i++)
             {
-                if (i >= 5) continue;
+                if (i >= 4) continue;
 
-                var font = new Font("Arial", 32, FontStyle.Bold, GraphicsUnit.Pixel);
+                var font = new Font("Arial", 28, FontStyle.Bold, GraphicsUnit.Pixel);
                 var stringFormat = new StringFormat
                 {
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Center
                 };
-                var isRGB = stringFormat.Alignment == StringAlignment.Near;
-
+                var isNear = stringFormat.Alignment == StringAlignment.Near;
+                int fontX = 5;
                 using (var graphics = Graphics.FromImage(bmp))
                 {
+                    var newSize = graphics.MeasureString(item.DisplayValues[i], font);
+                    if (newSize.Width > 144)
+                    {
+                        fontX = 144;
+                        fontX -= strOffset[i];
+                    }
+
                     font = autoSize ? ImageHelper.ResizeFont(graphics, item.DisplayValues[i], font) : font;
-                    graphics.DrawString(item.DisplayValues[i], font, new SolidBrush(pluginSettings.FrontColor), !isRGB ? 72 : 5, (144 / (item.DisplayValues.Count + 1)) * (i + 1), stringFormat);
+                    graphics.DrawString(item.DisplayValues[i], font, new SolidBrush(pluginSettings.FrontColor), !isNear ? 72 : fontX, (120 / (item.DisplayValues.Count + 1)) * (i + 1), stringFormat);
+
+
+                    strOffset[i] += 20;
+                    if (strOffset[i] > newSize.Width + 144)
+                    {
+                        strOffset[i] = 0;
+                    }
                 }
             }
 
