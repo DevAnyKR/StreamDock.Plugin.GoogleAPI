@@ -19,7 +19,7 @@
 
 ## Hardware, Original
 
-➡️ [AliExpress Store](https://s.click.aliexpress.com/e/_DC8mx5N)
+➡️ [AliExpress Store](https://s.click.aliexpress.com/e/_DmRzpLr)
 
 ![image](https://github.com/DevAnyKR/StreamDock.Plugin.GoogleAPI/assets/110871727/a5a3d159-9bee-4287-a0ee-ed2abd64cf6d)
 
